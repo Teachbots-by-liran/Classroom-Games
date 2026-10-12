@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" stroke="#1d1b3a" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+<circle cx="240" cy="185" r="150" fill="#c9a227"/>
+<circle cx="240" cy="185" r="122" fill="#fdf6e3"/>
+<g stroke-width="5"><path d="M159 104 l9 9 M321 104 l-9 9 M159 266 l9 -9 M321 266 l-9 -9"/></g>
+<text x="240" y="108" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="36" text-anchor="middle" stroke="none" fill="#1d1b3a" >N</text><text x="240" y="297" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="36" text-anchor="middle" stroke="none" fill="#1d1b3a" >S</text><text x="330" y="198" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="36" text-anchor="middle" stroke="none" fill="#1d1b3a" >E</text><text x="150" y="198" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="36" text-anchor="middle" stroke="none" fill="#1d1b3a" >W</text>
+<path d="M240 122 L258 185 L222 185Z" fill="#e63946" stroke-width="6"/>
+<path d="M240 248 L258 185 L222 185Z" fill="#ffffff" stroke-width="6"/>
+<circle cx="240" cy="185" r="10" fill="#1d1b3a"/>
+<rect x="225" y="18" width="30" height="20" rx="6" fill="#c9a227"/>
+</svg>

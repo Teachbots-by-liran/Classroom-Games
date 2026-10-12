@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" stroke="#1d1b3a" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+<defs><clipPath id="dome"><path d="M120 220 C120 95 360 95 360 220Z"/></clipPath></defs>
+<path d="M130 212 Q60 222 30 252 Q100 256 170 228Z" fill="#a98467"/>
+<path d="M350 212 Q420 222 450 252 Q380 256 310 228Z" fill="#a98467"/>
+<path d="M120 220 C120 95 360 95 360 220Z" fill="#b5926f"/>
+<g clip-path="url(#dome)" stroke="#7a5a3e" stroke-width="5" fill="none">
+  <path d="M100 130 H380 M100 160 H380 M100 190 H380 M160 90 V230 M200 90 V230 M240 90 V230 M280 90 V230 M320 90 V230"/>
+</g>
+<path d="M120 220 C120 95 360 95 360 220Z" fill="none"/>
+<path d="M185 218 Q240 150 295 218Z" fill="#8b6b4f"/>
+<path d="M240 112 q-30 -25 -40 0 q15 10 40 0 q30 -25 40 0 q-15 10 -40 0" fill="#8b6b4f" stroke-width="5"/>
+<path d="M140 305 Q220 318 300 296" fill="none" stroke="#5e3b1f" stroke-width="14"/>
+<path d="M292 262 H344 V298 Q318 328 292 298Z" fill="#8d5524"/>
+<ellipse cx="318" cy="262" rx="26" ry="7" fill="#3b2412" stroke-width="5"/>
+</svg>

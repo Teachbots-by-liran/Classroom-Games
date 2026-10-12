@@ -1,0 +1,61 @@
+/* Team scoreboard — reusable by any classroom game.
+   A game can re-theme it by setting these variables on a parent element:
+   --u (size unit), --sb-card, --sb-border, --sb-accent, --sb-text, --sb-ink, --sb-score-font, --sb-name-font */
+
+.scoreboard {
+  --sb-card: linear-gradient(#152a9c, #0a1660);
+  --sb-border: rgba(255, 255, 255, .18);
+  --sb-accent: #FFD24A;
+  --sb-text: #fff;
+  --sb-ink: #06103f;
+  --sb-score-font: 'Anton', sans-serif;
+  --sb-name-font: 'Barlow Condensed', sans-serif;
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+  gap: calc(var(--u) * 1.2); min-width: 0;
+}
+
+.sb-team {
+  position: relative; display: flex; flex-direction: column; justify-content: center; gap: calc(var(--u) * .2);
+  padding: calc(var(--u) * .5) calc(var(--u) * .8);
+  background: var(--sb-card); color: var(--sb-text);
+  border: calc(var(--u) * .25) solid var(--sb-border);
+  border-top: calc(var(--u) * .6) solid var(--team);
+  border-radius: calc(var(--u) * .8);
+  transition: transform .3s, box-shadow .3s, border-color .3s;
+}
+.sb-team.turn {
+  border-color: var(--sb-accent); border-top-color: var(--team);
+  box-shadow: 0 0 calc(var(--u) * 2.2) color-mix(in srgb, var(--sb-accent) 60%, transparent);
+  transform: translateY(calc(var(--u) * -.5));
+}
+
+.sb-row { display: flex; align-items: center; justify-content: center; gap: calc(var(--u) * .5); min-width: 0; }
+.sb-name {
+  min-width: 0; font-family: var(--sb-name-font); font-weight: 700; font-size: calc(var(--u) * 1.95);
+  text-transform: uppercase; line-height: 1; letter-spacing: .01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sb-score {
+  text-align: center; font-family: var(--sb-score-font); font-size: calc(var(--u) * 4.4); line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+.sb-team.neg .sb-score { color: #ffb3c4; }
+
+.sb-turn-tag {
+  position: absolute; top: calc(var(--u) * -2.2); left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: calc(var(--u) * .3); white-space: nowrap;
+  background: var(--sb-accent); color: var(--sb-ink);
+  padding: calc(var(--u) * .1) calc(var(--u) * 1) calc(var(--u) * .1) calc(var(--u) * .6);
+  border-radius: 99px; font-family: var(--sb-name-font); font-weight: 800; text-transform: uppercase;
+  font-size: calc(var(--u) * 1.7);
+}
+.sb-turn-tag svg { width: 1em; height: 1em; }
+
+/* Team badge (shape + number key), shared with other screens */
+.team-badge { flex-shrink: 0; position: relative; display: inline-block; width: calc(var(--u) * 3); height: calc(var(--u) * 3); color: var(--team); }
+.team-badge svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 calc(var(--u) * .15) 0 rgba(0, 0, 0, .6)); }
+.team-badge b {
+  position: absolute; inset: 0; display: grid; place-items: center; padding-top: .2em;
+  font-family: var(--sb-score-font, 'Anton'), sans-serif; font-weight: 400; font-size: calc(var(--u) * 1.35);
+  color: var(--sb-ink, #06103f);
+}

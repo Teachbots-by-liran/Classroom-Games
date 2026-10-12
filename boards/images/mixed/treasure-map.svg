@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" stroke="#1d1b3a" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+<path d="M40 50 Q90 35 140 50 T240 45 T340 50 T440 45 L430 160 L445 310 Q390 325 340 310 T240 315 T140 310 T35 315 L50 180Z" fill="#f1dca7"/>
+<path d="M120 120 Q160 80 230 95 Q300 80 340 130 Q380 190 320 240 Q260 280 190 255 Q110 240 100 180 Q95 145 120 120Z" fill="#95d5b2"/>
+<path d="M160 220 Q200 150 260 175 T330 150" fill="none" stroke="#c1121f" stroke-width="7" stroke-dasharray="4 18"/>
+<path d="M315 130 l30 30 M345 130 l-30 30" stroke="#c1121f" stroke-width="12"/>
+<path d="M170 215 v-50" stroke-width="7"/><path d="M170 165 q-25 -5 -35 15 M170 165 q25 -5 35 15 M170 165 q-10 -25 -30 -25 M170 165 q10 -25 30 -25" fill="none" stroke="#2d6a4f" stroke-width="8"/>
+<circle cx="395" cy="250" r="30" fill="#fff8e1" stroke-width="5"/><path d="M395 225 l7 25 l-7 25 l-7 -25z" fill="#c1121f" stroke-width="3"/>
+<text x="395" y="213" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="22" text-anchor="middle" stroke="none" fill="#1d1b3a" >N</text>
+</svg>

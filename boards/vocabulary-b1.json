@@ -1,0 +1,62 @@
+{
+  "title": "Everyday Vocabulary (B1)",
+  "timerSeconds": 30,
+  "dailyDouble": "random",
+  "categories": [
+    {
+      "name": "How Do They Feel?",
+      "questions": [
+        { "question": "How does he feel?", "image": "images/vocab/surprised.svg", "answer": "surprised" },
+        { "question": "How does she feel after the marathon?", "image": "images/vocab/exhausted.svg", "answer": "exhausted", "explain": "= very, very tired" },
+        { "question": "How does he feel?", "image": "images/vocab/confused.svg", "answer": "confused" },
+        { "question": "She fell over in front of the whole class. How does she feel?", "image": "images/vocab/embarrassed.svg", "answer": "embarrassed" },
+        { "question": "Someone broke his new phone. How does he feel? (a strong word!)", "image": "images/vocab/furious.svg", "answer": "furious", "explain": "= extremely angry" }
+      ]
+    },
+    {
+      "name": "Opposites",
+      "questions": [
+        { "question": "What is the opposite of CHEAP?", "answer": "expensive" },
+        { "question": "What is the opposite of ANCIENT?", "answer": "modern" },
+        { "question": "What is the opposite of GENEROUS?", "answer": "mean / selfish" },
+        { "question": "Add a prefix to make the opposite of PATIENT.", "answer": "impatient" },
+        { "question": "Add a prefix to make the opposite of RESPONSIBLE.", "answer": "irresponsible" }
+      ]
+    },
+    {
+      "name": "In the Kitchen",
+      "questions": [
+        { "question": "What's this?", "image": "images/vocab/kettle.svg", "answer": "a kettle" },
+        { "question": "What's this?", "image": "images/vocab/frying-pan.svg", "answer": "a frying pan" },
+        { "question": "What's this?", "image": "images/vocab/rolling-pin.svg", "answer": "a rolling pin" },
+        { "question": "What's this?", "image": "images/vocab/whisk.svg", "answer": "a whisk" },
+        { "question": "What's this? You use it for cheese.", "image": "images/vocab/grater.svg", "answer": "a grater" }
+      ]
+    },
+    {
+      "name": "Phrasal Verbs",
+      "questions": [
+        { "question": "Complete: Please ___ ___ your little brother while I'm out. (= take care of)", "answer": "look after" },
+        { "question": "Complete: Never ___ ___! Keep trying! (= stop trying)", "answer": "give up" },
+        { "question": "Complete: We've ___ ___ of milk. Can you buy some? (= have none left)", "answer": "run out" },
+        { "question": "Complete: Don't ___ ___ your homework until tomorrow. (= delay)", "answer": "put off" },
+        { "question": "Complete: It took her weeks to ___ ___ the flu. (= recover from)", "answer": "get over" }
+      ]
+    },
+    {
+      "name": "Weather & Nature",
+      "questions": [
+        { "question": "What's this?", "image": "images/vocab/rainbow.svg", "answer": "a rainbow" },
+        { "question": "What kind of weather is this?", "image": "images/vocab/thunderstorm.svg", "answer": "a thunderstorm", "explain": "thunder + lightning" },
+        { "question": "What's this?", "image": "images/vocab/waterfall.svg", "answer": "a waterfall" },
+        { "question": "What's this?", "image": "images/vocab/volcano.svg", "answer": "a volcano", "explain": "It's erupting!" },
+        { "question": "What's this dangerous wind called?", "image": "images/vocab/tornado.svg", "answer": "a tornado" }
+      ]
+    }
+  ],
+  "final": {
+    "category": "Word Building",
+    "question": "Make a NOUN from the verb DECIDE.",
+    "answer": "decision"
+  }
+}

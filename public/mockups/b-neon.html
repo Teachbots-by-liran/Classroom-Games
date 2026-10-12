@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup B: Neon Arena</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  :root { --u: min(1vw, 1.7778vh); --cyan: #2EF2FF; --pink: #FF3EA5; --violet: #8B5CFF; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    position: relative; color: #fff; font-family: 'Barlow Condensed', sans-serif;
+    background:
+      radial-gradient(ellipse 70% 45% at 50% 0%, rgba(139,92,255,.45), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 50% 100%, rgba(255,62,165,.35), transparent 70%),
+      #07020f;
+  }
+  /* Perspective grid floor */
+  body::before {
+    content: ''; position: absolute; left: -50%; right: -50%; bottom: 0; height: 55%;
+    background:
+      repeating-linear-gradient(90deg, rgba(46,242,255,.35) 0 2px, transparent 2px 6%),
+      repeating-linear-gradient(0deg, rgba(46,242,255,.35) 0 2px, transparent 2px 9%);
+    transform: perspective(600px) rotateX(62deg); transform-origin: bottom;
+    -webkit-mask-image: linear-gradient(transparent, #000 70%); mask-image: linear-gradient(transparent, #000 70%);
+  }
+  .stage { position: relative; height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) calc(var(--u)*11.5);
+    gap: calc(var(--u)*1.6); padding: calc(var(--u)*1.4) calc(var(--u)*1.6); }
+
+  /* ---------- Board ---------- */
+  .board {
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: calc(var(--u)*6.8) repeat(5, minmax(0, 1fr)); gap: calc(var(--u)*.9);
+  }
+  .cat {
+    display: grid; place-items: center; text-align: center; padding: 0 calc(var(--u)*.5);
+    font-weight: 800; text-transform: uppercase; line-height: .95; letter-spacing: .03em;
+    font-size: calc(var(--u)*2.15);
+    background: linear-gradient(90deg, transparent, rgba(255,62,165,.22), transparent);
+    border-bottom: calc(var(--u)*.3) solid var(--pink);
+    box-shadow: 0 calc(var(--u)*.6) calc(var(--u)*1.2) calc(var(--u)*-.6) var(--pink);
+    text-shadow: 0 0 calc(var(--u)*1) rgba(255,62,165,.9);
+  }
+  .tile { min-height: 0;
+    border-radius: calc(var(--u)*.9); cursor: pointer; display: grid; place-items: center;
+    background: linear-gradient(160deg, rgba(46,242,255,.16), rgba(20,8,48,.85) 55%);
+    border: calc(var(--u)*.28) solid var(--cyan);
+    box-shadow: 0 0 calc(var(--u)*1.1) rgba(46,242,255,.55), inset 0 0 calc(var(--u)*1.4) rgba(46,242,255,.3);
+  }
+  .pts {
+    font-family: 'Big Shoulders Display'; font-weight: 900; font-size: calc(var(--u)*5.2); line-height: 1; color: #fff;
+    text-shadow: 0 0 calc(var(--u)*.6) var(--cyan), 0 0 calc(var(--u)*1.8) var(--cyan);
+  }
+  .tile.used {
+    background: radial-gradient(rgba(139,92,255,.35) 18%, transparent 20%) 0 0 / calc(var(--u)*1.4) calc(var(--u)*1.4), rgba(8,4,20,.8);
+    border: calc(var(--u)*.2) dashed rgba(139,92,255,.6); box-shadow: none;
+  }
+
+  /* ---------- Scoreboard ---------- */
+  .bar { display: flex; gap: calc(var(--u)*1.2); align-items: stretch; }
+  .teams { flex: 1; min-width: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: calc(var(--u)*1.1); }
+  .team {
+    position: relative; display: flex; flex-direction: column; justify-content: center; gap: calc(var(--u)*.2);
+    padding: calc(var(--u)*.5) calc(var(--u)*.8); border-radius: calc(var(--u)*.9);
+    background: rgba(10,4,26,.88); border: calc(var(--u)*.22) solid var(--team);
+    box-shadow: 0 0 calc(var(--u)*.8) color-mix(in srgb, var(--team) 60%, transparent);
+  }
+  .team.turn {
+    border-width: calc(var(--u)*.4); transform: translateY(calc(var(--u)*-.6));
+    box-shadow: 0 0 calc(var(--u)*2.4) var(--team), inset 0 0 calc(var(--u)*1.6) color-mix(in srgb, var(--team) 45%, transparent);
+  }
+  .trow { display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*.5); min-width: 0; }
+  .badge { flex-shrink: 0; position: relative; width: calc(var(--u)*3); height: calc(var(--u)*3); color: var(--team);
+    filter: drop-shadow(0 0 calc(var(--u)*.4) var(--team)); }
+  .badge svg { width: 100%; height: 100%; }
+  .badge b { position: absolute; inset: 0; display: grid; place-items: center; padding-top: .15em;
+    font-family: 'Big Shoulders Display'; font-weight: 900; font-size: calc(var(--u)*1.6); color: #07020f; }
+  .tname { min-width: 0; font-weight: 700; font-size: calc(var(--u)*1.8); text-transform: uppercase; line-height: 1;
+    letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--team); }
+  .tscore { text-align: center; font-family: 'Big Shoulders Display'; font-weight: 900; font-size: calc(var(--u)*4.8); line-height: 1; }
+  .turn-tag {
+    position: absolute; top: calc(var(--u)*-2.4); left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: calc(var(--u)*.3); white-space: nowrap;
+    background: #fff; color: #07020f; padding: 0 calc(var(--u)*1) 0 calc(var(--u)*.6);
+    border-radius: 99px; font-weight: 800; text-transform: uppercase; font-size: calc(var(--u)*1.8);
+    box-shadow: 0 0 calc(var(--u)*1.2) var(--team);
+  }
+  .turn-tag svg { width: 1em; height: 1em; }
+  .controls { display: flex; gap: calc(var(--u)*.8); align-items: center; }
+  .timer, .icon {
+    display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*.6); color: #fff;
+    background: rgba(10,4,26,.88); border: calc(var(--u)*.22) solid rgba(255,255,255,.45); border-radius: calc(var(--u)*.9);
+  }
+  .timer { height: 100%; padding: 0 calc(var(--u)*1.2); font-family: 'Big Shoulders Display'; font-weight: 900; font-size: calc(var(--u)*5); }
+  .timer svg { width: calc(var(--u)*3.2); color: var(--cyan); filter: drop-shadow(0 0 calc(var(--u)*.4) var(--cyan)); }
+  .icons { height: 100%; display: flex; flex-direction: column; gap: calc(var(--u)*.6); }
+  .icon { flex: 1; width: calc(var(--u)*5); }
+  .icon svg { width: calc(var(--u)*2.6); }
+</style>
+</head>
+<body>
+  <main class="stage">
+    <section class="board"></section>
+    <footer class="bar"><div class="teams"></div><div class="controls"></div></footer>
+  </main>
+  <script src="mock-data.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup A: Studio Classic</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  /* One "unit" scales with the screen, so 1280x720 and 1920x1080 look identical. */
+  :root { --u: min(1vw, 1.7778vh); --gold: #FFD24A; --gold-deep: #C98A00; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    background:
+      radial-gradient(ellipse 40% 60% at 15% -10%, rgba(120,170,255,.35), transparent 70%),
+      radial-gradient(ellipse 40% 60% at 85% -10%, rgba(120,170,255,.35), transparent 70%),
+      radial-gradient(ellipse 90% 70% at 50% 110%, #0b1f7a 0%, transparent 70%),
+      linear-gradient(#040a2e, #06103f 60%, #030820);
+    color: #fff; font-family: 'Barlow Condensed', sans-serif;
+  }
+  .stage { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) calc(var(--u)*11.5);
+    gap: calc(var(--u)*1.2); padding: calc(var(--u)*1.4) calc(var(--u)*1.6); }
+
+  /* ---------- Board ---------- */
+  .board {
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: calc(var(--u)*7.4) repeat(5, minmax(0, 1fr));
+    gap: calc(var(--u)*.7); padding: calc(var(--u)*.7);
+    background: #01051c; border-radius: calc(var(--u)*1.2);
+    box-shadow: 0 0 0 calc(var(--u)*.35) var(--gold-deep), 0 0 0 calc(var(--u)*.6) #3a2a00,
+                0 calc(var(--u)*1.5) calc(var(--u)*4) rgba(0,0,0,.7), 0 0 calc(var(--u)*6) rgba(80,130,255,.25);
+  }
+  .cat {
+    display: grid; place-items: center; text-align: center; padding: 0 calc(var(--u)*.6);
+    background: linear-gradient(#1c2fa8, #0d1a78); border-radius: calc(var(--u)*.5);
+    border-bottom: calc(var(--u)*.3) solid var(--gold);
+    font-weight: 800; text-transform: uppercase; line-height: .95;
+    font-size: calc(var(--u)*2.15); letter-spacing: .02em; text-shadow: 0 .12em 0 rgba(0,0,0,.6);
+  }
+  .tile { min-height: 0;
+    position: relative; border: 0; cursor: pointer; border-radius: calc(var(--u)*.5);
+    background:
+      linear-gradient(rgba(255,255,255,.28), rgba(255,255,255,0) 48%, rgba(0,0,0,0) 52%, rgba(0,0,0,.25)),
+      linear-gradient(#2346e0, #1430b8);
+    box-shadow: inset 0 calc(var(--u)*.15) 0 rgba(255,255,255,.5), inset 0 calc(var(--u)*-.25) 0 rgba(0,0,30,.5);
+    display: grid; place-items: center;
+  }
+  .pts {
+    font-family: 'Anton', sans-serif; font-size: calc(var(--u)*5.1); line-height: 1; color: var(--gold);
+    text-shadow: 0 calc(var(--u)*.3) 0 #5a3b00, 0 0 calc(var(--u)*1.2) rgba(255,200,60,.45);
+  }
+  .tile.used {
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 calc(var(--u)*.35), transparent calc(var(--u)*.35) calc(var(--u)*1.1)),
+      #071039;
+    box-shadow: inset 0 calc(var(--u)*.3) calc(var(--u)*.8) rgba(0,0,0,.8);
+  }
+
+  /* ---------- Scoreboard ---------- */
+  .bar { display: flex; gap: calc(var(--u)*1.2); align-items: stretch; }
+  .teams { flex: 1; min-width: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: calc(var(--u)*1.2); }
+  .team {
+    position: relative; display: flex; flex-direction: column; justify-content: center; gap: calc(var(--u)*.2);
+    padding: calc(var(--u)*.5) calc(var(--u)*.8);
+    background: linear-gradient(#152a9c, #0a1660); border-radius: calc(var(--u)*.8);
+    border: calc(var(--u)*.25) solid rgba(255,255,255,.18);
+    border-top: calc(var(--u)*.6) solid var(--team);
+  }
+  .team.turn { border-color: var(--gold); border-top-color: var(--team); box-shadow: 0 0 calc(var(--u)*2.2) rgba(255,210,74,.6); transform: translateY(calc(var(--u)*-.5)); }
+  .badge { flex-shrink: 0; position: relative; width: calc(var(--u)*3); height: calc(var(--u)*3); color: var(--team); }
+  .badge svg { width: 100%; height: 100%; filter: drop-shadow(0 calc(var(--u)*.15) 0 rgba(0,0,0,.6)); }
+  .badge b { position: absolute; inset: 0; display: grid; place-items: center; padding-top: .2em;
+    font-family: 'Anton'; font-weight: 400; font-size: calc(var(--u)*1.35); color: #06103f; }
+  .tname { font-weight: 700; font-size: calc(var(--u)*1.95); text-transform: uppercase; line-height: 1; letter-spacing: .01em; min-width: 0;
+    text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .trow { display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*.5); min-width: 0; }
+  .tscore { text-align: center; font-family: 'Anton'; font-size: calc(var(--u)*4.4); line-height: 1.05; }
+  .team.neg .tscore { color: #ffb3c4; }
+  .turn-tag {
+    position: absolute; top: calc(var(--u)*-2.2); left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: calc(var(--u)*.3);
+    background: var(--gold); color: #1a1000; padding: calc(var(--u)*.1) calc(var(--u)*1) calc(var(--u)*.1) calc(var(--u)*.6);
+    border-radius: 99px; font-weight: 800; text-transform: uppercase; font-size: calc(var(--u)*1.7);
+  }
+  .turn-tag svg { width: 1em; height: 1em; }
+  .controls { display: flex; gap: calc(var(--u)*.8); align-items: center; }
+  .timer, .icon {
+    height: 100%; display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*.6);
+    background: #0a1660; border: calc(var(--u)*.25) solid rgba(255,255,255,.18); border-radius: calc(var(--u)*.8); color: #fff;
+  }
+  .timer { padding: 0 calc(var(--u)*1.2); font-family: 'Anton'; font-size: calc(var(--u)*4.6); }
+  .timer svg { width: calc(var(--u)*3.2); color: var(--gold); }
+  .icons { height: 100%; display: flex; flex-direction: column; gap: calc(var(--u)*.6); }
+  .icon { flex: 1; height: auto; width: calc(var(--u)*5); }
+  .icon svg { width: calc(var(--u)*2.6); }
+</style>
+</head>
+<body>
+  <main class="stage">
+    <section class="board"></section>
+    <footer class="bar"><div class="teams"></div><div class="controls"></div></footer>
+  </main>
+  <script src="mock-data.js"></script>
+</body>
+</html>

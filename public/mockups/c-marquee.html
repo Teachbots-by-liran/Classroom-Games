@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup C: Marquee Gold</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  :root { --u: min(1vw, 1.7778vh); --plum: #2a0a2e; --ink: #1d0620; --bulb: calc(var(--u)*1.7); }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    color: #fff; font-family: 'Oswald', sans-serif;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 30%, rgba(255,180,60,.25), transparent 70%),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.35) 0 calc(var(--u)*1.2), rgba(255,255,255,.04) calc(var(--u)*2.6), rgba(0,0,0,.35) calc(var(--u)*4)),
+      linear-gradient(#5a0d2a, #3a0820 60%, #1a0410);
+  }
+  .stage { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) calc(var(--u)*11.5);
+    gap: calc(var(--u)*1.4); padding: calc(var(--u)*1.2) calc(var(--u)*1.6); }
+
+  /* ---------- Board in a light-bulb marquee frame ---------- */
+  .board {
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: calc(var(--u)*6.6) repeat(5, minmax(0, 1fr));
+    gap: calc(var(--u)*.6); padding: calc(var(--u)*2.6);
+    border-radius: calc(var(--u)*1.6);
+    --b: radial-gradient(circle, #fffbe6 0 22%, #ffd34d 34%, rgba(255,170,0,.45) 48%, transparent 66%);
+    background:
+      var(--b) top    / var(--bulb) var(--bulb) space no-repeat,
+      var(--b) bottom / var(--bulb) var(--bulb) space no-repeat,
+      var(--b) left   / var(--bulb) var(--bulb) no-repeat space,
+      var(--b) right  / var(--bulb) var(--bulb) no-repeat space,
+      linear-gradient(#3b0c3f, #1d0620);
+    background-origin: padding-box, padding-box, padding-box, padding-box, padding-box;
+    box-shadow: inset 0 0 0 calc(var(--u)*.35) #b07a1a, 0 0 0 calc(var(--u)*.35) #f6c950,
+                0 calc(var(--u)*1.2) calc(var(--u)*4) rgba(0,0,0,.75), 0 0 calc(var(--u)*5) rgba(255,190,70,.35);
+  }
+  .cat {
+    display: grid; place-items: center; text-align: center; padding: 0 calc(var(--u)*.5);
+    background: #0d020f; border-radius: calc(var(--u)*.5);
+    border: calc(var(--u)*.18) solid #f6c950;
+    font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: .02em;
+    font-size: calc(var(--u)*1.95);
+  }
+  .tile { min-height: 0;
+    border: 0; border-radius: calc(var(--u)*.5); cursor: pointer; display: grid; place-items: center;
+    background:
+      linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,0) 40%),
+      linear-gradient(135deg, #ffe58a, #f1b72c 40%, #c9861a 70%, #ffd75e);
+    box-shadow: inset 0 calc(var(--u)*-.35) 0 rgba(110,60,0,.55), inset 0 calc(var(--u)*.15) 0 rgba(255,255,255,.7),
+                0 calc(var(--u)*.25) calc(var(--u)*.5) rgba(0,0,0,.5);
+  }
+  .pts {
+    font-family: 'Archivo Black'; font-size: calc(var(--u)*4.4); line-height: 1; color: var(--ink);
+    text-shadow: 0 calc(var(--u)*.15) 0 rgba(255,240,190,.8);
+  }
+  .tile.used {
+    background:
+      repeating-linear-gradient(45deg, rgba(246,201,80,.12) 0 calc(var(--u)*.3), transparent calc(var(--u)*.3) calc(var(--u)*1.2)),
+      repeating-linear-gradient(-45deg, rgba(246,201,80,.12) 0 calc(var(--u)*.3), transparent calc(var(--u)*.3) calc(var(--u)*1.2)),
+      #12030f;
+    box-shadow: inset 0 calc(var(--u)*.3) calc(var(--u)*.8) rgba(0,0,0,.9);
+  }
+
+  /* ---------- Scoreboard as podiums ---------- */
+  .bar { display: flex; gap: calc(var(--u)*1.2); align-items: stretch; }
+  .teams { flex: 1; min-width: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: calc(var(--u)*1.1); }
+  .team {
+    position: relative; display: flex; flex-direction: column; justify-content: center; gap: calc(var(--u)*.15);
+    padding: calc(var(--u)*.4) calc(var(--u)*.8); border-radius: calc(var(--u)*.6) calc(var(--u)*.6) calc(var(--u)*.3) calc(var(--u)*.3);
+    background: linear-gradient(#1e0820, #0b020c);
+    border: calc(var(--u)*.2) solid #b07a1a;
+    box-shadow: inset 0 calc(var(--u)*.7) 0 var(--team);
+    padding-top: calc(var(--u)*1.1);
+  }
+  .team.turn { border-color: #fff3c0; transform: translateY(calc(var(--u)*-.5));
+    box-shadow: inset 0 calc(var(--u)*.7) 0 var(--team), 0 0 calc(var(--u)*2.4) rgba(255,215,94,.85); }
+  .trow { display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*.5); min-width: 0; }
+  .badge { flex-shrink: 0; position: relative; width: calc(var(--u)*3); height: calc(var(--u)*3); color: var(--team); }
+  .badge svg { width: 100%; height: 100%; }
+  .badge b { position: absolute; inset: 0; display: grid; place-items: center; padding-top: .1em;
+    font-family: 'Archivo Black'; font-size: calc(var(--u)*1.3); color: var(--ink); }
+  .tname { min-width: 0; font-weight: 700; font-size: calc(var(--u)*1.8); text-transform: uppercase; line-height: 1;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tscore { text-align: center; font-family: 'Archivo Black'; font-size: calc(var(--u)*3.3); line-height: 1.25; color: #ffd75e; }
+  .team.neg .tscore { color: #fff; }
+  .turn-tag {
+    position: absolute; top: calc(var(--u)*-2.3); left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: calc(var(--u)*.3);
+    background: linear-gradient(#ffe58a, #f1b72c); color: var(--ink); padding: 0 calc(var(--u)*1) 0 calc(var(--u)*.6);
+    border-radius: 99px; font-weight: 700; text-transform: uppercase; font-size: calc(var(--u)*1.7);
+  }
+  .turn-tag svg { width: 1em; height: 1em; }
+  .controls { display: flex; gap: calc(var(--u)*.8); align-items: center; }
+  .timer, .icon {
+    display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*.6); color: #fff;
+    background: linear-gradient(#1e0820, #0b020c); border: calc(var(--u)*.2) solid #b07a1a; border-radius: calc(var(--u)*.6);
+  }
+  .timer { height: 100%; padding: 0 calc(var(--u)*1.2); font-family: 'Archivo Black'; font-size: calc(var(--u)*4.2); }
+  .timer svg { width: calc(var(--u)*3.2); color: #ffd75e; }
+  .icons { height: 100%; display: flex; flex-direction: column; gap: calc(var(--u)*.6); }
+  .icon { flex: 1; width: calc(var(--u)*5); }
+  .icon svg { width: calc(var(--u)*2.6); }
+</style>
+</head>
+<body>
+  <main class="stage">
+    <section class="board"></section>
+    <footer class="bar"><div class="teams"></div><div class="controls"></div></footer>
+  </main>
+  <script src="mock-data.js"></script>
+</body>
+</html>

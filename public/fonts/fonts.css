@@ -1,0 +1,26 @@
+/* Fonts stored locally so the games work with no internet.
+   All fonts are free under the SIL Open Font License (OFL). */
+
+@font-face { font-family: 'Anton'; font-weight: 400; font-display: block;
+  src: url('anton-latin-400-normal.woff2') format('woff2'); }
+
+@font-face { font-family: 'Archivo Black'; font-weight: 400; font-display: block;
+  src: url('archivo-black-latin-400-normal.woff2') format('woff2'); }
+
+@font-face { font-family: 'Bebas Neue'; font-weight: 400; font-display: block;
+  src: url('bebas-neue-latin-400-normal.woff2') format('woff2'); }
+
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600; font-display: block;
+  src: url('barlow-condensed-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 700; font-display: block;
+  src: url('barlow-condensed-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 800; font-display: block;
+  src: url('barlow-condensed-latin-800-normal.woff2') format('woff2'); }
+
+@font-face { font-family: 'Big Shoulders Display'; font-weight: 800; font-display: block;
+  src: url('big-shoulders-display-latin-800-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Big Shoulders Display'; font-weight: 900; font-display: block;
+  src: url('big-shoulders-display-latin-900-normal.woff2') format('woff2'); }
+
+@font-face { font-family: 'Oswald'; font-weight: 700; font-display: block;
+  src: url('oswald-latin-700-normal.woff2') format('woff2'); }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Board Mockups</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #111; color: #fff; font-family: 'Barlow Condensed', sans-serif; padding: 24px; }
+  h1 { font-family: 'Anton'; font-weight: 400; letter-spacing: .04em; font-size: 40px; margin-bottom: 4px; }
+  p { color: #bbb; font-size: 20px; margin-bottom: 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; }
+  a { color: inherit; text-decoration: none; display: block; }
+  .frame { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 10px; outline: 3px solid #333; }
+  a:hover .frame { outline-color: #fff; }
+  iframe { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; border: 0; transform-origin: 0 0; pointer-events: none; }
+  h2 { font-weight: 800; font-size: 28px; margin-top: 10px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+  <h1>Pick a direction</h1>
+  <p>Click one to open it full-screen (press F11 in the browser for true full-screen).</p>
+  <div class="grid">
+    <a href="a-studio.html"><div class="frame"><iframe src="a-studio.html" tabindex="-1"></iframe></div><h2>A · Studio Classic</h2></a>
+    <a href="b-neon.html"><div class="frame"><iframe src="b-neon.html" tabindex="-1"></iframe></div><h2>B · Neon Arena</h2></a>
+    <a href="c-marquee.html"><div class="frame"><iframe src="c-marquee.html" tabindex="-1"></iframe></div><h2>C · Marquee Gold</h2></a>
+  </div>
+  <script>
+    // Scale each full-HD preview down to fit its card.
+    function fit() {
+      document.querySelectorAll('.frame').forEach(f => {
+        f.querySelector('iframe').style.transform = 'scale(' + f.clientWidth / 1920 + ')';
+      });
+    }
+    addEventListener('resize', fit);
+    fit();
+  </script>
+</body>
+</html>

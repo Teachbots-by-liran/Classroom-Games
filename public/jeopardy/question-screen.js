@@ -11,12 +11,15 @@ import { ICONS } from '../shared/icons.js';
 import { pushKeys, teamKey } from '../shared/keys.js';
 import { Scoreboard, formatChange } from '../shared/scoreboard.js';
 import { toast } from '../shared/toast.js';
+import { sound } from '../shared/sound.js';
+import { timerDisplay } from '../shared/timer.js';
 import { changeScore, saveGame, undoScore } from './game-state.js';
 
 const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// options: { tileEl (to animate from), onClose(result) } — result is 'done' or 'putback'
-export function openQuestion(screen, game, { tileEl = null, onClose }) {
+// options: { tileEl (to animate from), timer, warnAt, onClose(result) } — result is 'done' or 'putback'
+// Space / R for the timer, M, F and ? are handled by the board screen underneath.
+export function openQuestion(screen, game, { tileEl = null, timer = null, warnAt = 5, onClose }) {
   const { c, r } = game.open;
   const cat = game.board.categories[c];
   const q = cat.questions[r];
@@ -31,6 +34,7 @@ export function openQuestion(screen, game, { tileEl = null, onClose }) {
       <header class="q-head">
         <button class="q-btn" data-action="putback" title="Put back: close without using this tile (Backspace)">${ICONS.undo}</button>
         <div class="q-title"><span class="q-cat">${esc(cat.name)}</span><span class="q-pts">${points}</span></div>
+        <button class="q-timer" data-action="timer" title="Start / pause the timer (Space). Reset: R"></button>
         <button class="q-btn" data-action="close" title="Done (Esc)">${ICONS.close}</button>
       </header>
       <div class="q-body${q.image ? ' has-image' : ''}${mc ? ' has-choices' : ''}">
@@ -61,8 +65,22 @@ export function openQuestion(screen, game, { tileEl = null, onClose }) {
   scoreboard.setPoints(points);
   scoreboard.render(game.teams, null, { animate: false });
 
+  // Timer: big in the header; in the last seconds the whole screen edge pulses too.
+  let stopTimerDisplay = () => {};
+  if (timer) {
+    const timerEl = el.querySelector('.q-timer');
+    stopTimerDisplay = timerDisplay(timerEl, timer, { warnAt });
+    const stopEdge = timer.subscribe(t => {
+      el.classList.toggle('q-warning', timerEl.classList.contains('warning') && t.running);
+      el.classList.toggle('q-timesup', t.done);
+    });
+    const stop = stopTimerDisplay;
+    stopTimerDisplay = () => { stop(); stopEdge(); };
+  }
+
   function score(team, sign) {
     if (team >= game.teams.length) return;
+    sound.play(sign > 0 ? 'correct' : 'wrong');
     changeScore(game, team, sign * points);
     scoreboard.render(game.teams, null);
     if (sign > 0) reveal(); // a correct answer: show it to the class
@@ -71,6 +89,7 @@ export function openQuestion(screen, game, { tileEl = null, onClose }) {
   function undo() {
     const last = undoScore(game);
     if (!last) return toast(`${ICONS.undo} Nothing to undo`);
+    sound.play('undo');
     scoreboard.render(game.teams, null);
     toast(`${ICONS.undo} Undone: ${esc(game.teams[last.team].name)} ${formatChange(last.delta)}`);
   }
@@ -79,6 +98,8 @@ export function openQuestion(screen, game, { tileEl = null, onClose }) {
     if (game.open.revealed) return;
     game.open.revealed = true;
     saveGame(game);
+    timer?.pause();
+    sound.play('reveal');
     showAnswer(true);
   }
 
@@ -113,6 +134,7 @@ export function openQuestion(screen, game, { tileEl = null, onClose }) {
     if (at >= 0) out.splice(at, 1);
     else out.push(i);
     saveGame(game);
+    if (at < 0) sound.play('out');
     showOut(i, at < 0);
   }
 
@@ -167,6 +189,7 @@ export function openQuestion(screen, game, { tileEl = null, onClose }) {
     if (closing) return;
     closing = true;
     popKeys();
+    stopTimerDisplay();
     onClose(result, async () => {
       await animateClose();
       el.remove();
@@ -183,6 +206,7 @@ export function openQuestion(screen, game, { tileEl = null, onClose }) {
     else if (action === 'close') close('done');
     else if (action === 'putback') close('putback');
     else if (action === 'undo') undo();
+    else if (action === 'timer') timer?.toggle();
   });
 
   const popKeys = pushKeys(e => {

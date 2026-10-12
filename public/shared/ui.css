@@ -33,3 +33,31 @@
 }
 .dialog-btn.primary { background: var(--sb-accent, #FFD24A); border-color: var(--sb-accent, #FFD24A); color: var(--sb-ink, #06103f); }
 .dialog-btn.danger { background: #ffb3c4; border-color: #ffb3c4; }
+
+/* Help overlay (keyboard shortcuts) */
+.help-backdrop {
+  position: fixed; inset: 0; z-index: 95; display: grid; place-items: center;
+  background: rgba(1, 3, 15, .82); backdrop-filter: blur(4px);
+}
+.help {
+  width: min(92vw, calc(var(--u) * 120)); max-height: 92vh; overflow-y: auto;
+  padding: calc(var(--u) * 2) calc(var(--u) * 3); border-radius: calc(var(--u) * 1.2);
+  background: linear-gradient(#152a9c, #0a1660); color: #fff; font-family: 'Barlow Condensed', sans-serif;
+  box-shadow: 0 0 0 calc(var(--u) * .3) var(--sb-accent, #FFD24A), 0 calc(var(--u) * 2) calc(var(--u) * 5) rgba(0, 0, 0, .7);
+}
+.help h2 { font-family: 'Anton', sans-serif; font-weight: 400; font-size: calc(var(--u) * 4); letter-spacing: .04em; color: var(--sb-accent, #FFD24A); text-align: center; }
+.help-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(var(--u) * 2.4); margin-top: calc(var(--u) * 1.2); }
+.help h3 {
+  font-weight: 800; font-size: calc(var(--u) * 2.2); text-transform: uppercase; letter-spacing: .04em;
+  padding-bottom: calc(var(--u) * .4); margin-bottom: calc(var(--u) * .6); border-bottom: calc(var(--u) * .2) solid rgba(255, 255, 255, .25);
+}
+.help dl > div { display: grid; grid-template-columns: calc(var(--u) * 11) 1fr; align-items: center; gap: calc(var(--u) * .8); padding: calc(var(--u) * .35) 0; }
+.help dt { display: flex; align-items: center; gap: calc(var(--u) * .3); flex-wrap: wrap; }
+.help dt span { opacity: .6; font-size: calc(var(--u) * 1.6); }
+.help dd { margin: 0; font-weight: 600; font-size: calc(var(--u) * 1.9); line-height: 1.15; }
+.help kbd {
+  display: inline-grid; place-items: center; min-width: calc(var(--u) * 3); padding: 0 calc(var(--u) * .5);
+  border-radius: calc(var(--u) * .4); background: #fff; color: #06103f; border: 0; opacity: 1;
+  box-shadow: inset 0 calc(var(--u) * -.25) 0 #b7bfd9;
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: calc(var(--u) * 1.8); line-height: 1.5;
+}

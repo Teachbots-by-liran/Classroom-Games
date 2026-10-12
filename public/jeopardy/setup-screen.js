@@ -9,7 +9,7 @@ import { listBoards, loadBoard } from './board-file.js';
 const MIN_TEAMS = 2;
 const remembered = createSavedState('jeopardy-setup'); // last team names and board, for next lesson
 
-export async function showSetup(app, { onStart }) {
+export async function showSetup(app, { onStart, resumeGame = null, onResume }) {
   const last = remembered.load() || {};
   const state = {
     boards: [],
@@ -26,7 +26,11 @@ export async function showSetup(app, { onStart }) {
 
   app.innerHTML = `
     <div class="screen setup">
-      <div class="logo">JEOPARDY!</div>
+      <div class="setup-top">
+        <div class="logo">JEOPARDY!</div>
+        ${resumeGame ? `<button class="resume-btn" data-action="resume">${ICONS.play}<span>Continue last game</span>
+          <small>${esc(resumeGame.board.title)} · ${resumeGame.teams.length} teams</small></button>` : ''}
+      </div>
       <div class="setup-body">
         <section class="panel">
           <div class="panel-head"><h2><span class="step-num">1</span>Board</h2></div>
@@ -182,6 +186,9 @@ export async function showSetup(app, { onStart }) {
       case 'start':
         start();
         break;
+      case 'resume':
+        onResume(resumeGame);
+        return;
     }
     updateStart();
   });

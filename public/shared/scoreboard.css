@@ -59,3 +59,46 @@
   font-family: var(--sb-score-font, 'Anton'), sans-serif; font-weight: 400; font-size: calc(var(--u) * 1.35);
   color: var(--sb-ink, #06103f);
 }
+
+.sb-team[data-team] { cursor: pointer; }
+
+/* Score change: the card bumps and a "+300" / "−300" badge floats up (arrow + sign, not just color) */
+.sb-team.bump-up   { animation: sb-bump .6s cubic-bezier(.3, 1.6, .5, 1); }
+.sb-team.bump-down { animation: sb-shake .5s; }
+@keyframes sb-bump  { 40% { transform: translateY(calc(var(--u) * -1.2)) scale(1.08); } }
+@keyframes sb-shake { 20%, 60% { transform: translateX(calc(var(--u) * -.6)); } 40%, 80% { transform: translateX(calc(var(--u) * .6)); } }
+
+.sb-chip {
+  position: absolute; left: 50%; top: 0; z-index: 5; pointer-events: none;
+  display: flex; align-items: center; gap: calc(var(--u) * .3); white-space: nowrap;
+  padding: calc(var(--u) * .2) calc(var(--u) * 1); border-radius: 99px;
+  font-family: var(--sb-score-font); font-size: calc(var(--u) * 3);
+  animation: sb-float 1.6s ease-out forwards;
+}
+.sb-chip svg { width: .7em; height: .7em; }
+.sb-chip.up   { background: var(--sb-accent); color: var(--sb-ink); box-shadow: 0 0 calc(var(--u) * 2) var(--sb-accent); }
+.sb-chip.down { background: #2a0d2e; color: #ffb3c4; border: calc(var(--u) * .25) solid #ffb3c4; }
+@keyframes sb-float {
+  0%   { transform: translate(-50%, 0) scale(.4); opacity: 0; }
+  15%  { transform: translate(-50%, -110%) scale(1.15); opacity: 1; }
+  70%  { transform: translate(-50%, -150%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -190%) scale(1); opacity: 0; }
+}
+
+/* ✓ / ✗ buttons (question screen) */
+.sb-actions { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * .5); margin-top: calc(var(--u) * .3); }
+.sb-act {
+  display: flex; align-items: center; justify-content: center; gap: calc(var(--u) * .3);
+  padding: calc(var(--u) * .3) 0; border-radius: calc(var(--u) * .5);
+  font-family: var(--sb-score-font); font-size: calc(var(--u) * 1.8); line-height: 1;
+  border: calc(var(--u) * .2) solid transparent;
+}
+.sb-act .icon { width: 1em; height: 1em; }
+.sb-act.plus  { background: var(--sb-accent); color: var(--sb-ink); }
+.sb-act.minus { background: rgba(0, 0, 0, .35); color: #fff; border-color: rgba(255, 255, 255, .45); }
+.sb-act:hover { filter: brightness(1.15); }
+.sb-act:active { transform: scale(.95); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sb-team.bump-up, .sb-team.bump-down { animation: none; }
+}

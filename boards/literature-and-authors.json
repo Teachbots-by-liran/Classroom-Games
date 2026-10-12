@@ -6,16 +6,11 @@
     {
       "name": "Famous Lines",
       "questions": [
-        { "question": "Which play is this from?", "quote": "Romeo, Romeo, wherefore art thou Romeo?",
-          "answer": "Romeo and Juliet", "explain": "by William Shakespeare" },
-        { "question": "Which book starts like this?", "quote": "It was the best of times, it was the worst of times…",
-          "answer": "A Tale of Two Cities", "explain": "by Charles Dickens" },
-        { "question": "Which book about a giant whale starts like this?", "quote": "Call me Ishmael.",
-          "answer": "Moby-Dick", "explain": "by Herman Melville" },
-        { "question": "Which book about farm animals is this from?", "quote": "All animals are equal, but some animals are more equal than others.",
-          "answer": "Animal Farm", "explain": "by George Orwell" },
-        { "question": "Which novel starts like this?", "quote": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
-          "answer": "Pride and Prejudice", "explain": "by Jane Austen" }
+        { "question": "Which play is this from?", "quote": "Romeo, Romeo, wherefore art thou Romeo?", "answer": "Romeo and Juliet", "explain": "by William Shakespeare" },
+        { "question": "Which book starts like this?", "quote": "It was the best of times, it was the worst of times…", "answer": "A Tale of Two Cities", "explain": "by Charles Dickens" },
+        { "question": "Which book about a giant whale starts like this?", "quote": "Call me Ishmael.", "answer": "Moby-Dick", "explain": "by Herman Melville" },
+        { "question": "Which book about farm animals is this from?", "quote": "All animals are equal, but some animals are more equal than others.", "answer": "Animal Farm", "explain": "by George Orwell" },
+        { "question": "Which novel starts like this?", "quote": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.", "answer": "Pride and Prejudice", "explain": "by Jane Austen" }
       ]
     },
     {
@@ -41,11 +36,11 @@
     {
       "name": "Genres",
       "questions": [
-        { "question": "Dragons, wizards and magic. What genre?", "answer": "fantasy" },
-        { "question": "A detective must solve a crime. What genre?", "answer": "mystery / crime" },
-        { "question": "Robots and space travel in the future. What genre?", "answer": "science fiction (sci-fi)" },
-        { "question": "A story about a real person's life, written by someone else. What is it?", "answer": "a biography" },
-        { "question": "A poem with exactly 14 lines. What is it?", "answer": "a sonnet" }
+        { "question": "Dragons, wizards and magic. What genre?", "choices": ["fantasy", "romance", "biography", "horror"], "answer": "fantasy" },
+        { "question": "A detective must solve a crime. What genre?", "choices": ["comedy", "mystery", "fable", "poetry"], "answer": "mystery" },
+        { "question": "Robots and space travel in the future. What genre?", "choices": ["historical fiction", "fairy tale", "science fiction", "autobiography"], "answer": "C" },
+        { "question": "A true story about a person's life, written by someone else, is…", "choices": ["an autobiography", "a biography", "a novel", "a diary"], "answer": "a biography", "explain": "If you write about your own life, it is an autobiography." },
+        { "question": "A poem with exactly 14 lines is called…", "choices": ["a haiku", "a limerick", "a sonnet", "a ballad"], "answer": "a sonnet", "explain": "Shakespeare wrote 154 of them!" }
       ]
     },
     {
@@ -59,9 +54,5 @@
       ]
     }
   ],
-  "final": {
-    "category": "Shakespeare",
-    "question": "In which English town was William Shakespeare born?",
-    "answer": "Stratford-upon-Avon"
-  }
+  "final": { "category": "Shakespeare", "question": "In which English town was William Shakespeare born?", "answer": "Stratford-upon-Avon" }
 }

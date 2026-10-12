@@ -6,37 +6,27 @@
     {
       "name": "Idioms in Pictures",
       "questions": [
-        { "question": "What idiom is this?", "image": "images/mixed/cat-bag.svg",
-          "answer": "Let the cat out of the bag", "explain": "= to tell a secret by mistake" },
-        { "question": "What idiom is this?", "image": "images/mixed/cats-dogs.svg",
-          "answer": "It's raining cats and dogs", "explain": "= it's raining very heavily" },
-        { "question": "This idiom means \"very easy\".", "image": "images/mixed/cake.svg",
-          "answer": "A piece of cake" },
-        { "question": "What idiom is this?", "image": "images/mixed/ice.svg",
-          "answer": "Break the ice", "explain": "= to make people feel relaxed at the start" },
-        { "question": "What idiom is this?", "image": "images/mixed/elephant.svg",
-          "answer": "The elephant in the room", "explain": "= a big problem nobody wants to talk about" }
+        { "question": "What idiom is this?", "image": "images/mixed/cat-bag.svg", "answer": "Let the cat out of the bag", "explain": "= to tell a secret by mistake" },
+        { "question": "What idiom is this?", "image": "images/mixed/cats-dogs.svg", "answer": "It's raining cats and dogs", "explain": "= it's raining very heavily" },
+        { "question": "This idiom means \"very easy\".", "image": "images/mixed/cake.svg", "answer": "A piece of cake" },
+        { "question": "What idiom is this?", "image": "images/mixed/ice.svg", "answer": "Break the ice", "explain": "= to make people feel relaxed at the start" },
+        { "question": "What idiom is this?", "image": "images/mixed/elephant.svg", "answer": "The elephant in the room", "explain": "= a big problem nobody wants to talk about" }
       ]
     },
     {
       "name": "Famous Quotes",
       "questions": [
-        { "question": "Who wrote this?", "quote": "To be, or not to be: that is the question.",
-          "answer": "William Shakespeare", "explain": "Hamlet, 1600" },
-        { "question": "Who said this in a famous 1963 speech?", "quote": "I have a dream.",
-          "answer": "Martin Luther King Jr." },
-        { "question": "Who said this, and where was he?", "quote": "That's one small step for man, one giant leap for mankind.",
-          "answer": "Neil Armstrong, on the Moon", "explain": "July 1969" },
-        { "question": "Which famous detective says this?", "quote": "Elementary, my dear Watson.",
-          "answer": "Sherlock Holmes" },
-        { "question": "Which scientist is believed to have said this?", "quote": "Imagination is more important than knowledge.",
-          "answer": "Albert Einstein" }
+        { "question": "Who wrote this?", "quote": "To be, or not to be: that is the question.", "answer": "William Shakespeare", "explain": "Hamlet, 1600" },
+        { "question": "Who said this in a famous 1963 speech?", "quote": "I have a dream.", "answer": "Martin Luther King Jr." },
+        { "question": "Who said this, and where was he?", "quote": "That's one small step for man, one giant leap for mankind.", "answer": "Neil Armstrong, on the Moon", "explain": "July 1969" },
+        { "question": "Which famous detective says this?", "quote": "Elementary, my dear Watson.", "answer": "Sherlock Holmes" },
+        { "question": "Which scientist is believed to have said this?", "quote": "Imagination is more important than knowledge.", "answer": "Albert Einstein" }
       ]
     },
     {
       "name": "Irregular Verbs",
       "questions": [
-        { "question": "What is the past simple of GO?", "answer": "went" },
+        { "question": "True or false? The past simple of GO is \"goed\".", "choices": ["True", "False"], "answer": "False", "explain": "GO – WENT – GONE" },
         { "question": "What is the past participle of EAT?", "answer": "eaten", "explain": "I have eaten." },
         { "question": "Complete: Yesterday I ___ the bus to school. (catch)", "answer": "caught" },
         { "question": "Give the past simple AND past participle of WRITE.", "answer": "wrote, written" },
@@ -46,16 +36,11 @@
     {
       "name": "British vs American",
       "questions": [
-        { "question": "Americans call this an elevator. What do the British call it?", "image": "images/mixed/lift.svg",
-          "answer": "a lift" },
-        { "question": "The British call these chips. What do Americans call them?", "image": "images/mixed/fries.svg",
-          "answer": "French fries (fries)" },
-        { "question": "Americans call this a truck. What do the British call it?", "image": "images/mixed/lorry.svg",
-          "answer": "a lorry" },
-        { "question": "Americans live in an apartment. What do the British live in?", "image": "images/mixed/flat.svg",
-          "answer": "a flat" },
-        { "question": "Americans throw garbage in a trash can. What do the British say?", "image": "images/mixed/bin.svg",
-          "answer": "rubbish in a (rubbish) bin" }
+        { "question": "Americans call this an elevator. What do the British call it?", "image": "images/mixed/lift.svg", "answer": "a lift" },
+        { "question": "The British call these chips. What do Americans call them?", "image": "images/mixed/fries.svg", "answer": "French fries (fries)" },
+        { "question": "Americans call this a truck. What do the British call it?", "image": "images/mixed/lorry.svg", "answer": "a lorry" },
+        { "question": "Americans live in an apartment. What do the British live in?", "image": "images/mixed/flat.svg", "answer": "a flat" },
+        { "question": "Americans throw garbage in a trash can. What do the British say?", "image": "images/mixed/bin.svg", "answer": "rubbish in a (rubbish) bin" }
       ]
     },
     {
@@ -64,14 +49,10 @@
         { "question": "What's this?", "image": "images/mixed/umbrella.svg", "answer": "an umbrella" },
         { "question": "What's this building?", "image": "images/mixed/lighthouse.svg", "answer": "a lighthouse" },
         { "question": "What's this?", "image": "images/mixed/treasure-map.svg", "answer": "a treasure map" },
-        { "question": "What's this?", "image": "images/mixed/compass.svg", "answer": "a compass" },
+        { "question": "What's this?", "image": "images/mixed/compass.svg", "choices": ["a clock", "a compass", "a coin", "a map"], "answer": "a compass" },
         { "question": "What's this?", "image": "images/mixed/hourglass.svg", "answer": "an hourglass", "explain": "also called a sand timer" }
       ]
     }
   ],
-  "final": {
-    "category": "The English Alphabet",
-    "question": "Which letter is used most often in written English?",
-    "answer": "E"
-  }
+  "final": { "category": "The English Alphabet", "question": "Which letter is used most often in written English?", "answer": "E" }
 }

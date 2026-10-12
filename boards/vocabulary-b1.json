@@ -36,11 +36,11 @@
     {
       "name": "Phrasal Verbs",
       "questions": [
-        { "question": "Complete: Please ___ ___ your little brother while I'm out. (= take care of)", "answer": "look after" },
-        { "question": "Complete: Never ___ ___! Keep trying! (= stop trying)", "answer": "give up" },
-        { "question": "Complete: We've ___ ___ of milk. Can you buy some? (= have none left)", "answer": "run out" },
-        { "question": "Complete: Don't ___ ___ your homework until tomorrow. (= delay)", "answer": "put off" },
-        { "question": "Complete: It took her weeks to ___ ___ the flu. (= recover from)", "answer": "get over" }
+        { "question": "Please ___ your little brother while I'm out. (= take care of)", "choices": ["look after", "look for", "look up", "look into"], "answer": "look after" },
+        { "question": "Never ___! Keep trying! (= stop trying)", "choices": ["give in", "give up", "give out", "give back"], "answer": "B" },
+        { "question": "We've ___ milk. Can you buy some? (= have none left)", "choices": ["run into", "run away from", "run out of", "run over"], "answer": "run out of" },
+        { "question": "Don't ___ your homework until tomorrow. (= delay)", "choices": ["put off", "put on", "put up", "put away"], "answer": "put off" },
+        { "question": "It took her weeks to ___ the flu. (= recover from)", "choices": ["get on", "get over", "get by", "get through to"], "answer": "get over" }
       ]
     },
     {
@@ -54,9 +54,5 @@
       ]
     }
   ],
-  "final": {
-    "category": "Word Building",
-    "question": "Make a NOUN from the verb DECIDE.",
-    "answer": "decision"
-  }
+  "final": { "category": "Word Building", "question": "Make a NOUN from the verb DECIDE.", "answer": "decision" }
 }

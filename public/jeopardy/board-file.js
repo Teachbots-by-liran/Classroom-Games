@@ -79,12 +79,15 @@ export function checkBoard(raw, file) {
         if (!text(q.answer) && !text(q.answerImage)) problems.push(`${qWhere} has no "answer".`);
         const points = q.points === undefined ? (r + 1) * 100 : Number(q.points);
         if (!Number.isFinite(points) || points <= 0) problems.push(`${qWhere}: "points" must be a number like 300.`);
+        const mc = checkChoices(q, qWhere, problems);
         return {
           points,
           question: text(q.question),
           quote: text(q.quote),
           image: picturePath(q.image),
-          answer: text(q.answer),
+          choices: mc.choices,
+          correct: mc.correct,
+          answer: mc.choices ? mc.choices[mc.correct] ?? text(q.answer) : text(q.answer),
           answerImage: picturePath(q.answerImage),
           explain: text(q.explain),
         };
@@ -102,12 +105,15 @@ export function checkBoard(raw, file) {
     const f = raw.final;
     if (!text(f.question) && !text(f.image) && !text(f.quote)) problems.push('The Final Round needs a "question".');
     if (!text(f.answer)) problems.push('The Final Round has no "answer".');
+    const mc = checkChoices(f, 'Final Round', problems);
     final = {
       category: text(f.category) || 'Final Round',
       question: text(f.question),
       quote: text(f.quote),
       image: picturePath(f.image),
-      answer: text(f.answer),
+      choices: mc.choices,
+      correct: mc.correct,
+      answer: mc.choices ? mc.choices[mc.correct] ?? text(f.answer) : text(f.answer),
       answerImage: picturePath(f.answerImage),
       explain: text(f.explain),
     };
@@ -135,6 +141,35 @@ export function checkBoard(raw, file) {
     },
     problems,
   };
+}
+
+// Multiple choice: "choices" is a list of 2-6 options; "answer" is the correct option's text or its letter (A, B, C...).
+const MAX_CHOICES = 6;
+const LETTERS = 'ABCDEF';
+
+function checkChoices(q, where, problems) {
+  if (q.choices === undefined) return { choices: null, correct: null };
+  if (!Array.isArray(q.choices)) {
+    problems.push(`${where}: "choices" must be a list, like ["cat", "dog", "bird"].`);
+    return { choices: null, correct: null };
+  }
+  const choices = q.choices.map(text);
+  if (choices.length < 2 || choices.length > MAX_CHOICES) {
+    problems.push(`${where} has ${choices.length} choice${choices.length === 1 ? "" : "s"}. It needs between 2 and ${MAX_CHOICES}.`);
+  }
+  if (choices.some(c => !c)) problems.push(`${where} has an empty choice.`);
+
+  const answer = text(q.answer);
+  let correct = -1;
+  if (/^[A-F]$/i.test(answer) && !choices.some(c => c.toLowerCase() === answer.toLowerCase())) {
+    correct = LETTERS.indexOf(answer.toUpperCase());
+  } else {
+    correct = choices.findIndex(c => c.toLowerCase() === answer.toLowerCase());
+  }
+  if (answer && (correct < 0 || correct >= choices.length)) {
+    problems.push(`${where}: the answer "${answer}" is not one of the choices. Write it exactly as in the list, or use its letter (A, B, C...).`);
+  }
+  return { choices: choices.slice(0, MAX_CHOICES), correct: Math.max(0, correct) };
 }
 
 function text(value) {

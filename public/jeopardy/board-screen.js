@@ -5,16 +5,15 @@ import { esc, fitBlock } from '../shared/dom.js';
 import { ICONS } from '../shared/icons.js';
 import { pushKeys, teamKey, toggleFullscreen } from '../shared/keys.js';
 import { Scoreboard, formatChange } from '../shared/scoreboard.js';
-import { CountdownTimer, timerDisplay } from '../shared/timer.js';
+import { timerDisplay } from '../shared/timer.js';
 import { sound } from '../shared/sound.js';
 import { toast } from '../shared/toast.js';
-import { confirmDialog } from '../shared/dialog.js';
+import { chooseDialog } from '../shared/dialog.js';
 import { toggleHelp } from '../shared/help-overlay.js';
-import { isDailyDouble, isUsed, markUsed, nextTurn, saveGame, undoScore } from './game-state.js';
+import { isDailyDouble, isUsed, markUsed, nextTurn, saveGame, tilesLeft, undoScore } from './game-state.js';
+import { WARN_SECONDS, createGameTimer, toggleSound as switchSound } from './host-tools.js';
 import { maxBet, showDailyDouble } from './daily-double.js';
 import { openQuestion } from './question-screen.js';
-
-const WARN_SECONDS = 5;
 
 export const HELP = [
   { title: 'Anytime', keys: [
@@ -46,7 +45,9 @@ export const HELP = [
   ] },
 ];
 
-export function showBoard(app, game, { onNewGame }) {
+// onBoardDone(): every tile has been played (or the host chose to finish early) — go to the Final Round or winners.
+// onWinners(): skip straight to the winners. onNewGame(): back to setup.
+export function showBoard(app, game, { onNewGame, onBoardDone, onWinners }) {
   const { board } = game;
   const rows = Math.max(...board.categories.map(c => c.questions.length));
 
@@ -59,7 +60,7 @@ export function showBoard(app, game, { onNewGame }) {
           <div class="ctrl-grid">
             <button class="ctrl ctrl-small" data-action="undo" title="Undo last score change (U)">${ICONS.undo}</button>
             <button class="ctrl ctrl-small" data-action="sound" title="Sound on/off (M)"></button>
-            <button class="ctrl ctrl-small" data-action="new" title="End this game and start a new one">${ICONS.exit}</button>
+            <button class="ctrl ctrl-small" data-action="new" title="Finish the game / new game">${ICONS.exit}</button>
             <button class="ctrl ctrl-small" data-action="help" title="Keys (?)">${ICONS.help}</button>
           </div>
         </div>
@@ -69,20 +70,8 @@ export function showBoard(app, game, { onNewGame }) {
   const boardEl = screen.querySelector('.board');
 
   // ---------- Timer (shared by the board and the open question) ----------
-  const timer = new CountdownTimer(game.timerSeconds, {
-    onSecond: s => sound.play(s <= WARN_SECONDS ? 'tickLoud' : 'tick'),
-    onEnd: timesUp,
-  });
-  timerDisplay(screen.querySelector('.ctrl-timer'), timer, { warnAt: WARN_SECONDS });
-
-  function timesUp() {
-    sound.play('timeUp');
-    const banner = document.createElement('div');
-    banner.className = 'times-up';
-    banner.innerHTML = `<div class="times-up-inner">${ICONS.timer}<span>TIME'S UP!</span></div>`;
-    document.body.appendChild(banner);
-    setTimeout(() => banner.remove(), 2200);
-  }
+  const timer = createGameTimer(game.timerSeconds);
+  const stopTimerDisplay = timerDisplay(screen.querySelector('.ctrl-timer'), timer, { warnAt: WARN_SECONDS });
 
   // ---------- Board ----------
   function renderBoard() {
@@ -173,6 +162,7 @@ export function showBoard(app, game, { onNewGame }) {
         const tile = boardEl.querySelector(`[data-cat="${c}"][data-row="${r}"]`);
         if (result === 'done' && tile) tile.classList.add('just-used');
         questionOpen = false;
+        if (result === 'done' && tilesLeft(game) === 0) setTimeout(() => leave(onBoardDone), 900);
       },
     });
   }
@@ -199,21 +189,30 @@ export function showBoard(app, game, { onNewGame }) {
     soundBtn.setAttribute('aria-pressed', String(!sound.muted));
   }
   function toggleSound() {
-    const muted = sound.toggleMute();
+    switchSound();
     showSoundButton();
-    toast(muted ? `${ICONS.muted} Sound off` : `${ICONS.sound} Sound on`, 1400);
   }
 
-  async function newGame() {
+  // Leave the board screen for another screen.
+  function leave(next) {
+    popKeys();
+    stopTimerDisplay();
+    timer.reset();
+    next();
+  }
+
+  // The door button: finish the game early, or start a new one.
+  async function gameMenu() {
     timer.pause();
-    const sure = await confirmDialog({
-      title: 'End this game?', text: 'The scores will be lost.', ok: 'End game', cancel: 'Keep playing', danger: true,
-    });
-    if (sure) {
-      popKeys();
-      timer.reset();
-      onNewGame();
-    }
+    const options = [];
+    if (game.finalRound) options.push({ label: 'Go to the Final Round', value: 'final', primary: true });
+    options.push({ label: 'Show the winners', value: 'winners', primary: !game.finalRound });
+    options.push({ label: 'New game (scores are lost)', value: 'new', danger: true });
+    options.push({ label: 'Keep playing', value: null });
+    const choice = await chooseDialog({ title: 'Finish the game?', options });
+    if (choice === 'final') leave(onBoardDone);
+    if (choice === 'winners') leave(onWinners);
+    if (choice === 'new') leave(onNewGame);
   }
 
   screen.querySelector('.controls').addEventListener('click', e => {
@@ -223,7 +222,7 @@ export function showBoard(app, game, { onNewGame }) {
       case 'timer': timer.toggle(); break;
       case 'undo': undo(); break;
       case 'sound': toggleSound(); break;
-      case 'new': newGame(); break;
+      case 'new': gameMenu(); break;
       case 'help': toggleHelp(HELP); break;
     }
   });

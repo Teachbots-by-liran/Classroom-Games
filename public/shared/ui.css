@@ -32,7 +32,7 @@
   font-weight: 800; font-size: calc(var(--u) * 2.2); text-transform: uppercase;
 }
 .dialog-btn.primary { background: var(--sb-accent, #FFD24A); border-color: var(--sb-accent, #FFD24A); color: var(--sb-ink, #06103f); }
-.dialog-btn.danger { background: #ffb3c4; border-color: #ffb3c4; }
+.dialog-btn.danger { background: #ffb3c4; border-color: #ffb3c4; color: #06103f; }
 
 /* Help overlay (keyboard shortcuts) */
 .help-backdrop {
@@ -61,3 +61,5 @@
   box-shadow: inset 0 calc(var(--u) * -.25) 0 #b7bfd9;
   font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: calc(var(--u) * 1.6); line-height: 1.4;
 }
+.dialog-buttons.column { flex-direction: column; align-items: stretch; }
+.dialog-buttons.column .dialog-btn { min-width: calc(var(--u) * 30); }

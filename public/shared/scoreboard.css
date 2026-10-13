@@ -105,3 +105,19 @@
 
 /* Teams that are not playing this question (e.g. someone else's Daily Double) */
 .sb-team.idle { opacity: .4; border-style: dashed; }
+
+/* Marked right / wrong (Final Round): a round badge with a check or cross, plus a pressed button */
+.sb-mark {
+  position: absolute; top: calc(var(--u) * -1.4); right: calc(var(--u) * -1); z-index: 4;
+  width: calc(var(--u) * 4); height: calc(var(--u) * 4); display: grid; place-items: center; border-radius: 50%;
+  border: calc(var(--u) * .3) solid #fff; box-shadow: 0 calc(var(--u) * .3) calc(var(--u) * .8) rgba(0, 0, 0, .5);
+  animation: sb-bump .5s cubic-bezier(.3, 1.6, .5, 1);
+}
+.sb-mark .icon { width: 60%; height: 60%; }
+.sb-team.mark-right .sb-mark { background: var(--sb-accent); color: var(--sb-ink); }
+.sb-team.mark-wrong .sb-mark {
+  color: #fff;
+  background: repeating-linear-gradient(135deg, #8a1538 0 calc(var(--u) * .4), #5c0d26 calc(var(--u) * .4) calc(var(--u) * .8));
+}
+.sb-act[aria-pressed="true"] { box-shadow: 0 0 0 calc(var(--u) * .25) #fff; }
+.sb-act.minus[aria-pressed="true"] { background: #fff; color: var(--sb-ink); }

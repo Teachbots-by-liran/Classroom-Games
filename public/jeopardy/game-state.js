@@ -20,6 +20,8 @@ export function newGame({ board, teams, turn, finalRound, timerSeconds }) {
     dailyDouble: pickDailyDouble(board),
     history: [],      // score changes, newest last, for undo: { team, delta }
     open: null,       // the question on screen: { c, r, revealed }
+    phase: 'board',   // 'board' → 'final' (optional) → 'winners'
+    final: null,      // Final Round progress, see startFinal()
   };
 }
 
@@ -83,4 +85,33 @@ export function undoScore(game) {
 
 export function nextTurn(game) {
   game.turn = (game.turn + 1) % game.teams.length;
+}
+
+// ---------- Final Round ----------
+
+export function startFinal(game) {
+  game.phase = 'final';
+  game.final = game.final || {
+    stage: 'category', // 'category' → 'wagers' → 'question'
+    wagers: {},        // team index → secret bet
+    marks: {},         // team index → 'right' | 'wrong'
+    base: null,        // scores before the Final Round results, so a mark can be changed
+    revealed: false,
+  };
+  saveGame(game);
+}
+
+export function showWinners(game) {
+  game.phase = 'winners';
+  saveGame(game);
+}
+
+// Teams sorted by score, with their place. Teams with the same score share a place.
+export function ranking(game) {
+  const sorted = game.teams.map((t, i) => ({ ...t, index: i })).sort((a, b) => b.score - a.score);
+  let place = 0;
+  return sorted.map((t, i) => {
+    if (i === 0 || t.score < sorted[i - 1].score) place = i + 1;
+    return { ...t, place };
+  });
 }

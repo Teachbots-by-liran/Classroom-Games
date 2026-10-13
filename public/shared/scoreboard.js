@@ -32,6 +32,7 @@ export class Scoreboard {
     this.actions = actions;
     this.points = 0;
     this.actionTeams = null; // null = every team gets ✓ / ✗ buttons
+    this.marks = {};         // team index → 'right' | 'wrong', shown on the card
     this.shown = null; // scores currently on screen, to know what changed
 
     this.el.addEventListener('click', e => {
@@ -53,6 +54,11 @@ export class Scoreboard {
   }
 
   // Only these teams (indexes) get ✓ / ✗ buttons; the others are dimmed. null = all teams.
+  // Show which teams are already marked right or wrong (e.g. Final Round). Points = null hides amounts.
+  setMarks(marks) {
+    this.marks = marks || {};
+  }
+
   setActionTeams(list) {
     this.actionTeams = list;
   }
@@ -62,14 +68,15 @@ export class Scoreboard {
     this.shown = teams.map(t => t.score);
 
     this.el.innerHTML = teams.map((t, i) => `
-      <div class="sb-team${i === turn ? ' turn' : ''}${t.score < 0 ? ' neg' : ''}${this.isIdle(i) ? ' idle' : ''}" style="--team:${teamLook(i).color}" data-team="${i}">
+      <div class="sb-team${i === turn ? ' turn' : ''}${t.score < 0 ? ' neg' : ''}${this.isIdle(i) ? ' idle' : ''}${this.marks[i] ? ' mark-' + this.marks[i] : ''}" style="--team:${teamLook(i).color}" data-team="${i}">
         ${i === turn ? `<div class="sb-turn-tag">${ARROW_DOWN}<span>${esc(this.turnLabel)}</span></div>` : ''}
         <div class="sb-row">${teamBadge(i)}<div class="sb-name">${esc(t.name)}</div></div>
         <div class="sb-score">${formatScore(t.score)}</div>
+        ${this.marks[i] ? `<div class="sb-mark">${this.marks[i] === 'right' ? ICONS.check : ICONS.close}</div>` : ''}
         ${this.actions && !this.isIdle(i) ? `
           <div class="sb-actions">
-            <button class="sb-act plus" data-act="plus" data-team="${i}" title="Correct: give points (key ${i + 1})">${ICONS.check}<span>${formatChange(this.points)}</span></button>
-            <button class="sb-act minus" data-act="minus" data-team="${i}" title="Wrong: take points (Shift + ${i + 1})">${ICONS.close}<span>${formatChange(-this.points)}</span></button>
+            <button class="sb-act plus" data-act="plus" data-team="${i}" aria-pressed="${this.marks[i] === 'right'}" title="Correct (key ${i + 1})">${ICONS.check}${this.points === null ? '' : `<span>${formatChange(this.points)}</span>`}</button>
+            <button class="sb-act minus" data-act="minus" data-team="${i}" aria-pressed="${this.marks[i] === 'wrong'}" title="Wrong (Shift + ${i + 1})">${ICONS.close}${this.points === null ? '' : `<span>${formatChange(-this.points)}</span>`}</button>
           </div>` : ''}
       </div>`).join('');
 

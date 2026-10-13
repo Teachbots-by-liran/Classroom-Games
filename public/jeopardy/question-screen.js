@@ -249,7 +249,7 @@ function explainHtml(q) {
   return `<div class="q-answer compact" hidden><div class="q-answer-text"><div class="q-explain" dir="auto">${esc(q.explain)}</div></div></div>`;
 }
 
-function choicesHtml(q) {
+export function choicesHtml(q) {
   return `<div class="q-choices" style="--rows:${Math.ceil(q.choices.length / 2)}">` +
     q.choices.map((choice, i) => `
       <button class="q-choice" data-action="choice" data-choice="${i}" title="Click when a team chooses this">

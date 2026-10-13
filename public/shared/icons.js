@@ -17,5 +17,7 @@ export const ICONS = {
   undo:    line('<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>', 2.8),
   eye:     line('<path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/>'),
   exit:    line('<path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"/>'),
+  pencil:  line('<path d="M4 20l1.2-4.6L16.5 4.1a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8z"/><path d="M14.5 6l3.5 3.5"/>'),
+  trophy:  line('<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v3M8 21h8M9 21l1-4h4l1 4"/>'),
   warning: line('<path d="M12 3l10 18H2z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.5" r=".6" fill="currentColor"/>'),
 };

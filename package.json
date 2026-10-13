@@ -1,7 +1,7 @@
 {
   "name": "classroom-games",
   "version": "1.0.0",
-  "description": "Virtual Codenames for classroom use",
+  "description": "Classroom games for the projector: Codenames and Jeopardy",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

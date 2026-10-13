@@ -102,3 +102,6 @@
 @media (prefers-reduced-motion: reduce) {
   .sb-team.bump-up, .sb-team.bump-down { animation: none; }
 }
+
+/* Teams that are not playing this question (e.g. someone else's Daily Double) */
+.sb-team.idle { opacity: .4; border-style: dashed; }

@@ -19,11 +19,13 @@ const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // options: { tileEl (to animate from), timer, warnAt, onClose(result) } — result is 'done' or 'putback'
 // Space / R for the timer, M, F and ? are handled by the board screen underneath.
-export function openQuestion(screen, game, { tileEl = null, timer = null, warnAt = 5, onClose }) {
+// skipIntro: open without the flip (e.g. after the Daily Double screen), but still shrink back to the tile when closing.
+export function openQuestion(screen, game, { tileEl = null, skipIntro = false, timer = null, warnAt = 5, onClose }) {
   const { c, r } = game.open;
   const cat = game.board.categories[c];
   const q = cat.questions[r];
-  const points = q.points;
+  const dd = game.open.dd || null; // a Daily Double: only the betting team plays, for their bet
+  const points = dd ? dd.wager : q.points;
   const mc = Array.isArray(q.choices) && q.choices.length > 0;
   if (mc && !Array.isArray(game.open.out)) game.open.out = []; // choices crossed out so far
 
@@ -33,7 +35,7 @@ export function openQuestion(screen, game, { tileEl = null, timer = null, warnAt
     <div class="q-inner">
       <header class="q-head">
         <button class="q-btn" data-action="putback" title="Put back: close without using this tile (Backspace)">${ICONS.undo}</button>
-        <div class="q-title"><span class="q-cat">${esc(cat.name)}</span><span class="q-pts">${points}</span></div>
+        <div class="q-title">${dd ? `<span class="q-dd">Daily Double</span>` : `<span class="q-cat">${esc(cat.name)}</span>`}<span class="q-pts">${points.toLocaleString('en-US')}</span></div>
         <button class="q-timer" data-action="timer" title="Start / pause the timer (Space). Reset: R"></button>
         <button class="q-btn" data-action="close" title="Done (Esc)">${ICONS.close}</button>
       </header>
@@ -63,6 +65,7 @@ export function openQuestion(screen, game, { tileEl = null, timer = null, warnAt
   });
   el.querySelector('.q-bar').prepend(scoreboard.el);
   scoreboard.setPoints(points);
+  if (dd) scoreboard.setActionTeams([dd.team]);
   scoreboard.render(game.teams, null, { animate: false });
 
   // Timer: big in the header; in the last seconds the whole screen edge pulses too.
@@ -80,6 +83,7 @@ export function openQuestion(screen, game, { tileEl = null, timer = null, warnAt
 
   function score(team, sign) {
     if (team >= game.teams.length) return;
+    if (dd && team !== dd.team) return;
     sound.play(sign > 0 ? 'correct' : 'wrong');
     changeScore(game, team, sign * points);
     scoreboard.render(game.teams, null);
@@ -161,7 +165,7 @@ export function openQuestion(screen, game, { tileEl = null, timer = null, warnAt
 
   // ---------- Opening animation: the tile flips, then grows to fill the screen ----------
   async function animateOpen() {
-    if (!tileEl || REDUCED_MOTION) return;
+    if (!tileEl || skipIntro || REDUCED_MOTION) return;
     const from = tileEl.getBoundingClientRect();
     el.classList.add('opening');
     tileEl.animate([{ transform: 'rotateX(0)' }, { transform: 'rotateX(90deg)' }], { duration: 180, easing: 'ease-in' });
@@ -256,7 +260,7 @@ function choicesHtml(q) {
 }
 
 // A transform that shrinks the full screen down onto a rectangle (a tile).
-function rectTransform(rect) {
+export function rectTransform(rect) {
   const sx = rect.width / innerWidth;
   const sy = rect.height / innerHeight;
   return `translate(${rect.left}px, ${rect.top}px) scale(${sx}, ${sy})`;

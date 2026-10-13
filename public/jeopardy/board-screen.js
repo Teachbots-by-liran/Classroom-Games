@@ -10,7 +10,8 @@ import { sound } from '../shared/sound.js';
 import { toast } from '../shared/toast.js';
 import { confirmDialog } from '../shared/dialog.js';
 import { toggleHelp } from '../shared/help-overlay.js';
-import { isUsed, markUsed, nextTurn, saveGame, undoScore } from './game-state.js';
+import { isDailyDouble, isUsed, markUsed, nextTurn, saveGame, undoScore } from './game-state.js';
+import { maxBet, showDailyDouble } from './daily-double.js';
 import { openQuestion } from './question-screen.js';
 
 const WARN_SECONDS = 5;
@@ -28,6 +29,12 @@ export const HELP = [
     ['Click', 'Open a question'],
     ['1–6', 'Give that team the turn'],
     ['T', 'Next team’s turn'],
+  ] },
+  { title: 'Daily Double', keys: [
+    ['0–9', 'Type the bet'],
+    ['↑ / ↓', 'Bet 100 more / less'],
+    ['T', 'Another team bets'],
+    ['Enter', 'Lock the bet in'],
   ] },
   { title: 'Question', keys: [
     ['A', 'Show the answer'],
@@ -115,6 +122,10 @@ export function showBoard(app, game, { onNewGame }) {
   function open(c, r, tileEl) {
     if (questionOpen) return;
     game.open = { c, r, revealed: false };
+    if (isDailyDouble(game, c, r)) {
+      const team = game.turn;
+      game.open.dd = { team, wager: Math.min(game.board.categories[c].questions[r].points, maxBet(game, team)), locked: false };
+    }
     saveGame(game);
     showQuestion(tileEl);
   }
@@ -122,9 +133,28 @@ export function showBoard(app, game, { onNewGame }) {
   function showQuestion(tileEl) {
     questionOpen = true;
     timer.reset(game.timerSeconds);
+    const dd = game.open.dd;
+    if (dd && !dd.locked) {
+      // Daily Double: reveal and bet first, then the question opens underneath.
+      showDailyDouble(screen, game, {
+        tileEl,
+        onLocked: () => openQ(tileEl, true),
+        onCancel: () => {
+          game.open = null;
+          saveGame(game);
+          questionOpen = false;
+        },
+      });
+      return;
+    }
     if (tileEl) sound.play('open');
+    openQ(tileEl, false);
+  }
+
+  function openQ(tileEl, skipIntro) {
     openQuestion(screen, game, {
       tileEl,
+      skipIntro,
       timer,
       warnAt: WARN_SECONDS,
       onClose: async (result, animateAway) => {

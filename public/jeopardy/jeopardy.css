@@ -440,3 +440,123 @@ kbd {
 .times-up-inner .icon { width: .8em; height: .8em; }
 @keyframes times-up-in { from { transform: rotate(-4deg) scale(.2); opacity: 0; } }
 @keyframes times-up-out { to { opacity: 0; transform: scale(1.1); } }
+
+/* ================= DAILY DOUBLE ================= */
+
+.dd {
+  position: fixed; inset: 0; z-index: 30; overflow: hidden; transform-origin: 0 0;
+  background: radial-gradient(circle at 50% 45%, #3420a8 0%, #120a52 45%, #040220 80%);
+}
+
+/* Spotlights sweeping from the floor */
+.dd-lights span {
+  position: absolute; bottom: -5%; width: 34vw; height: 130vh; transform-origin: 50% 100%;
+  background: linear-gradient(to top, rgba(255, 235, 160, .55), rgba(255, 235, 160, 0) 85%);
+  clip-path: polygon(46% 100%, 54% 100%, 100% 0, 0 0); mix-blend-mode: screen;
+  animation: dd-sweep 2.6s ease-in-out infinite alternate;
+}
+.dd-lights span:nth-child(1) { left: 2%;  --from: -30deg; --to: 18deg; }
+.dd-lights span:nth-child(2) { left: 33%; --from: 14deg;  --to: -14deg; animation-duration: 3.1s; }
+.dd-lights span:nth-child(3) { left: 64%; --from: 30deg;  --to: -18deg; animation-duration: 2.2s; }
+@keyframes dd-sweep { from { transform: rotate(var(--from)); } to { transform: rotate(var(--to)); } }
+
+/* Gold rays bursting out behind the title */
+.dd-burst i {
+  position: absolute; left: 50%; top: 45%; width: calc(var(--u) * 1.4); height: 46vmin; margin-left: calc(var(--u) * -.7);
+  transform-origin: 50% 0; transform: rotate(var(--a)) scaleY(0);
+  background: linear-gradient(#ffe27a, rgba(255, 210, 74, 0));
+  animation: dd-ray 1.3s cubic-bezier(.2, .8, .3, 1) .45s both;
+}
+@keyframes dd-ray {
+  0% { transform: rotate(var(--a)) scaleY(0); opacity: 1; }
+  100% { transform: rotate(var(--a)) scaleY(1.6); opacity: 0; }
+}
+
+/* The title slams in, then moves up to make room for the bet */
+.dd-title {
+  position: absolute; left: 50%; top: 45%; margin: 0;
+  display: flex; flex-direction: column; align-items: center; line-height: .9;
+  font-family: 'Anton', sans-serif; font-weight: 400; font-size: calc(var(--u) * 15); letter-spacing: .03em; text-transform: uppercase;
+  transform: translate(-50%, -50%) rotate(-4deg);
+  transition: top .6s cubic-bezier(.5, 0, .2, 1), transform .6s cubic-bezier(.5, 0, .2, 1);
+}
+.dd-title span {
+  background: linear-gradient(#fffbe6 0%, #ffd24a 45%, #c98a00 52%, #ffe27a 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 calc(var(--u) * .5) 0 #5a3b00) drop-shadow(0 0 calc(var(--u) * 3) rgba(255, 200, 60, .55));
+  animation: dd-slam .7s cubic-bezier(.3, 1.6, .5, 1) both;
+}
+.dd-title span:nth-child(1) { animation-delay: .4s; }
+.dd-title span:nth-child(2) { animation-delay: .65s; }
+@keyframes dd-slam { from { transform: scale(4) rotate(-14deg); opacity: 0; } }
+.dd.wagering .dd-title { top: 12%; transform: translate(-50%, -50%) scale(.42) rotate(-2deg); }
+
+/* The bet panel */
+.dd-wager {
+  position: absolute; left: 0; right: 0; top: 23%; bottom: 4%;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: calc(var(--u) * 1.4);
+  opacity: 0; transform: translateY(calc(var(--u) * 6)); pointer-events: none;
+  transition: opacity .5s .25s, transform .5s .25s cubic-bezier(.2, .8, .2, 1);
+}
+.dd.wagering .dd-wager { opacity: 1; transform: none; pointer-events: auto; }
+
+.dd-teams { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: calc(var(--u) * 1); max-width: 92%; }
+.dd-team {
+  display: flex; align-items: center; gap: calc(var(--u) * .6); max-width: calc(var(--u) * 24);
+  padding: calc(var(--u) * .5) calc(var(--u) * 1.2) calc(var(--u) * .5) calc(var(--u) * .7); border-radius: 99px;
+  background: rgba(1, 5, 28, .55); border: calc(var(--u) * .25) solid rgba(255, 255, 255, .25);
+  font-weight: 800; font-size: calc(var(--u) * 2); text-transform: uppercase; opacity: .6;
+}
+.dd-team:hover { opacity: .9; }
+.dd-team-name { min-width: 0; white-space: nowrap; overflow: hidden; }
+.dd-team.on {
+  opacity: 1; font-size: calc(var(--u) * 3); padding: calc(var(--u) * .6) calc(var(--u) * 1.6) calc(var(--u) * .6) calc(var(--u) * .8);
+  background: linear-gradient(#152a9c, #0a1660); border-color: var(--gold); max-width: calc(var(--u) * 40);
+  box-shadow: 0 0 calc(var(--u) * 2.4) rgba(255, 210, 74, .6);
+}
+.dd-team.on .team-badge { width: calc(var(--u) * 4.4); height: calc(var(--u) * 4.4); }
+.dd-team.on .team-badge b { font-size: calc(var(--u) * 2); }
+.dd-team-score { font-family: 'Anton'; font-weight: 400; margin-left: calc(var(--u) * .6); padding-left: calc(var(--u) * 1); border-left: calc(var(--u) * .2) solid rgba(255, 255, 255, .3); }
+
+.dd-bet { display: flex; align-items: center; gap: calc(var(--u) * 2.4); }
+.dd-step {
+  width: calc(var(--u) * 10); height: calc(var(--u) * 10); border-radius: 50%;
+  background: rgba(1, 5, 28, .55); border: calc(var(--u) * .35) solid rgba(255, 255, 255, .5);
+  font-family: 'Anton'; font-size: calc(var(--u) * 3);
+}
+.dd-step:hover { border-color: #fff; }
+.dd-step:active { transform: scale(.94); }
+.dd-amount {
+  min-width: calc(var(--u) * 34); padding: calc(var(--u) * .4) calc(var(--u) * 3) calc(var(--u) * .9); text-align: center;
+  border-radius: calc(var(--u) * 1.4); color: var(--ink);
+  background: linear-gradient(rgba(255, 255, 255, .5), rgba(255, 255, 255, 0) 50%), linear-gradient(#ffe27a, #f5b800);
+  box-shadow: inset 0 calc(var(--u) * -.4) 0 rgba(120, 70, 0, .5), 0 0 calc(var(--u) * 4) rgba(255, 210, 74, .55);
+}
+.dd-value { display: block; font-family: 'Anton'; font-size: calc(var(--u) * 13); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.dd-max { font-weight: 800; font-size: calc(var(--u) * 2.2); text-transform: uppercase; letter-spacing: .04em; opacity: .75; }
+
+.dd-buttons { display: flex; align-items: stretch; gap: calc(var(--u) * 1.6); }
+.dd-allin {
+  display: flex; align-items: center; gap: calc(var(--u) * .7); padding: 0 calc(var(--u) * 2.2); border-radius: calc(var(--u) * 1);
+  background: rgba(1, 5, 28, .55); border: calc(var(--u) * .3) dashed rgba(255, 255, 255, .6);
+  font-weight: 800; font-size: calc(var(--u) * 2.8); text-transform: uppercase;
+}
+.dd-allin .icon { color: var(--gold); }
+.dd-allin.on { border-style: solid; border-color: var(--gold); box-shadow: 0 0 calc(var(--u) * 2) rgba(255, 210, 74, .5); }
+.dd-lock { margin: 0; min-width: calc(var(--u) * 30); }
+.dd-cancel { position: absolute; top: calc(var(--u) * 1.4); left: calc(var(--u) * 1.6); z-index: 2; }
+
+/* After a refresh (or with reduced motion): straight to the bet, no fireworks */
+.dd.no-intro .dd-title, .dd.no-intro .dd-wager { transition: none; }
+.dd.no-intro .dd-title span { animation: none; }
+.dd.no-intro .dd-burst { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .dd-lights span { animation: none; }
+}
+
+/* Daily Double label on the question screen */
+.q-dd {
+  font-family: 'Anton'; font-size: calc(var(--u) * 3.6); letter-spacing: .04em; text-transform: uppercase;
+  background: linear-gradient(#fffbe6, #ffd24a 50%, #c98a00 55%, #ffe27a); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 calc(var(--u) * .2) 0 #5a3b00);
+}

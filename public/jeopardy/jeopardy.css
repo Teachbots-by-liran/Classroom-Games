@@ -879,3 +879,40 @@ kbd {
 .ed-points input { width: calc(var(--u) * 8); text-align: center; font-family: 'Anton'; }
 .ed-clear { margin-left: auto; }
 .ed-note { font-weight: 600; font-size: calc(var(--u) * 1.8); opacity: .8; line-height: 1.3; }
+
+/* Import (editor) */
+.ed-import { height: 100%; padding: 0 calc(var(--u) * 1.4); font-size: calc(var(--u) * 2); }
+.ed-tile-icons .want { display: inline-flex; opacity: .7; outline: calc(var(--u) * .12) dashed currentColor; outline-offset: calc(var(--u) * .08); border-radius: 2px; }
+.ed-picture { flex-direction: column; }
+.ed-idea {
+  max-width: 90%; margin-top: calc(var(--u) * .6); text-align: center;
+  font-weight: 700; font-size: calc(var(--u) * 1.8); color: var(--gold);
+}
+.dialog.import { width: min(92vw, calc(var(--u) * 80)); text-align: left; max-height: 94vh; overflow-y: auto; }
+.dialog.import h2 { display: flex; align-items: center; gap: calc(var(--u) * .6); font-size: calc(var(--u) * 3); }
+.dialog.import h2 .icon { color: var(--sb-accent, #FFD24A); }
+.import-steps { margin: calc(var(--u) * 1.2) 0 0; padding-left: calc(var(--u) * 3); display: flex; flex-direction: column; gap: calc(var(--u) * 1.6); }
+.import-steps li { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--u) * .6); font-size: calc(var(--u) * 2); }
+.import-steps li::marker { font-family: 'Anton'; color: var(--sb-accent, #FFD24A); }
+.import-step-title { font-weight: 800; font-size: calc(var(--u) * 2.2); text-transform: uppercase; letter-spacing: .03em; }
+.import-row { display: flex; gap: calc(var(--u) * 1); width: 100%; }
+.import-row label { flex: 1; display: flex; flex-direction: column; gap: calc(var(--u) * .3); font-weight: 700; font-size: calc(var(--u) * 1.6); text-transform: uppercase; }
+.dialog.import input:not([type="file"]), .import-text {
+  width: 100%; padding: calc(var(--u) * .5) calc(var(--u) * .8); border-radius: calc(var(--u) * .5);
+  background: #0a1450; color: #fff; border: calc(var(--u) * .18) solid rgba(255, 255, 255, .35);
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: calc(var(--u) * 1.9); text-transform: none;
+}
+.import-text { font-size: calc(var(--u) * 1.6); resize: vertical; }
+.dialog.import input:focus, .import-text:focus { outline: none; border-color: var(--sb-accent, #FFD24A); }
+.dialog.import .dialog-btn { display: inline-flex; align-items: center; justify-content: center; gap: calc(var(--u) * .5); }
+.dialog.import small { font-size: calc(var(--u) * 1.6); opacity: .75; }
+.import-file { font-weight: 600; font-size: calc(var(--u) * 1.7); opacity: .85; display: flex; align-items: center; gap: calc(var(--u) * .8); flex-wrap: wrap; }
+.import-file input { font-size: calc(var(--u) * 1.5); }
+.import-error {
+  display: flex; gap: calc(var(--u) * .5); align-items: flex-start; width: 100%;
+  padding: calc(var(--u) * .6) calc(var(--u) * .9); border-radius: calc(var(--u) * .5);
+  background: #2a0d2e; border: calc(var(--u) * .18) dashed #ffb3c4; color: #ffb3c4; font-weight: 600; font-size: calc(var(--u) * 1.7);
+}
+.import-error[hidden] { display: none; }
+.import-error .icon { flex-shrink: 0; margin-top: .15em; }
+.dialog.import .dialog-buttons { justify-content: flex-end; }

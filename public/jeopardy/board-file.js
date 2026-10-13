@@ -30,7 +30,7 @@ export async function loadBoard(file) {
 }
 
 // Turn a JSON syntax error into "Line 12: ..." with a hint about the usual causes.
-function describeJsonError(text, err) {
+export function describeJsonError(text, err) {
   const msg = err.message || '';
   let line = null;
   const lineMatch = msg.match(/line (\d+)/i);

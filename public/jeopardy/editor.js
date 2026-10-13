@@ -10,6 +10,7 @@ import { toast } from '../shared/toast.js';
 import { chooseDialog, confirmDialog } from '../shared/dialog.js';
 import { createSavedState } from '../shared/saved-state.js';
 import { checkBoard } from './board-file.js';
+import { importDialog } from './import-dialog.js';
 
 const DRAFT = createSavedState('jeopardy-editor-draft');
 const LETTERS = 'ABCDEF';
@@ -30,7 +31,7 @@ const EXTRA_ICONS = {
 // ---------- Converting between the board file and the editor ----------
 
 function emptyQuestion() {
-  return { question: '', quote: '', image: '', answer: '', explain: '', answerImage: '', points: '', mc: false, choices: ['', '', '', ''], correct: 0 };
+  return { question: '', quote: '', image: '', imageIdea: '', answer: '', explain: '', answerImage: '', points: '', mc: false, choices: ['', '', '', ''], correct: 0 };
 }
 
 function blankBoard() {
@@ -55,7 +56,7 @@ function fromFileQuestion(q = {}, r = 0) {
   const mc = Array.isArray(q.choices);
   const choices = mc ? q.choices.map(String) : ['', '', '', ''];
   return {
-    question: q.question || '', quote: q.quote || '', image: q.image || '',
+    question: q.question || '', quote: q.quote || '', image: q.image || '', imageIdea: q.imageIdea || '',
     answer: mc ? '' : (q.answer ?? '') + '', explain: q.explain || '', answerImage: q.answerImage || '',
     points: q.points !== undefined && Number(q.points) !== (r + 1) * 100 ? String(q.points) : '',
     mc, choices, correct: mc ? correctIndex(choices, q.answer) : 0,
@@ -87,6 +88,7 @@ function toFileQuestion(q, r) {
   const out = {};
   if (r >= 0 && q.points !== '' && Number(q.points) !== (r + 1) * 100) out.points = Number(q.points);
   for (const key of ['question', 'quote', 'image']) if (q[key].trim()) out[key] = q[key].trim();
+  if (!q.image && q.imageIdea.trim()) out.imageIdea = q.imageIdea.trim(); // a note for the teacher: which picture to find
   if (q.mc) {
     out.choices = q.choices.map(c => c.trim());
     out.answer = out.choices[q.correct] ?? '';
@@ -173,6 +175,7 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
         <button class="q-btn" data-action="back" title="Back to the boards">${ICONS.undo}</button>
         <input class="ed-title" data-field="title" placeholder="Board title, e.g. Unit 3: Food" maxlength="60" spellcheck="true">
         <span class="ed-status" aria-live="polite"></span>
+        <button class="ed-btn ed-import" data-action="import" title="Fill in the whole board at once, e.g. from Claude">${ICONS.plus}<span>Import</span></button>
         <button class="start-btn ed-save" data-action="save">${EXTRA_ICONS.save}SAVE</button>
       </header>
       <div class="ed-main">
@@ -239,7 +242,7 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
           <button class="ed-tile${empty ? ' empty' : bad ? ' bad' : ' ok'}${on ? ' on' : ''}" data-select="tile" data-c="${c}" data-r="${r}"
             aria-label="Category ${c + 1}, ${pts} points${empty ? ', empty' : bad ? ', needs fixing' : ', done'}">
             <span class="ed-tile-pts">${esc(pts)}</span>
-            <span class="ed-tile-icons">${q.image ? EXTRA_ICONS.picture : ''}${q.mc ? EXTRA_ICONS.choices : ''}${q.quote.trim() ? EXTRA_ICONS.quote : ''}${dd ? EXTRA_ICONS.star : ''}</span>
+            <span class="ed-tile-icons">${q.image ? EXTRA_ICONS.picture : q.imageIdea ? `<span class="want" title="Picture idea: ${esc(q.imageIdea)}">${EXTRA_ICONS.picture}</span>` : ''}${q.mc ? EXTRA_ICONS.choices : ''}${q.quote.trim() ? EXTRA_ICONS.quote : ''}${dd ? EXTRA_ICONS.star : ''}</span>
             <span class="ed-tile-state">${empty ? ICONS.plus : bad ? ICONS.warning : ICONS.check}</span>
           </button>`;
       }).join('')).join('');
@@ -265,12 +268,12 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
       </label>`;
   }
 
-  function pictureField(label, field, value) {
+  function pictureField(label, field, value, idea = '') {
     return `
       <div class="ed-field">
         <span class="ed-label">${label}<small>optional</small></span>
         <div class="ed-picture${value ? ' has' : ''}" data-drop="${field}">
-          ${value ? `<img src="${esc('/boards/' + value)}" alt="">` : `<span class="ed-drop-hint">${EXTRA_ICONS.picture}Drop a picture here</span>`}
+          ${value ? `<img src="${esc('/boards/' + value)}" alt="">` : `<span class="ed-drop-hint">${EXTRA_ICONS.picture}Drop a picture here</span>${idea ? `<span class="ed-idea">Idea: ${esc(idea)}</span>` : ''}`}
         </div>
         <div class="ed-row">
           <label class="ed-btn">${EXTRA_ICONS.picture}<span>${value ? 'Change' : 'Choose'} picture</span>
@@ -286,7 +289,7 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
     return `
       ${final ? fieldText('Final Round category', 'f-category', q.category, { placeholder: 'e.g. Shakespeare' }) : ''}
       ${fieldText('Question', 'question', q.question, { multiline: true, placeholder: 'e.g. What idiom is this?' })}
-      ${pictureField('Picture', 'image', q.image)}
+      ${pictureField('Picture', 'image', q.image, q.imageIdea)}
       ${fieldText('Quote', 'quote', q.quote, { multiline: true, hint: 'optional · shown in big quote marks' })}
       <div class="ed-field">
         <span class="ed-label">Answer type</span>
@@ -506,6 +509,20 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
     switch (btn.dataset.action) {
       case 'back': return back();
       case 'save': await save(); return;
+      case 'import': {
+        const raw = await importDialog();
+        if (!raw) return;
+        const hasWork = board.categories.some(cat => cat.name.trim() || cat.questions.some(qq => !isEmpty(qq)));
+        if (hasWork && !(await confirmDialog({ title: 'Replace this board?', text: 'Everything on it now will be replaced by the imported board.', ok: 'Replace', danger: true }))) return;
+        const title = board.title;
+        board = fromFile(raw);
+        if (!board.title.trim()) board.title = title;
+        root.querySelector('.ed-title').value = board.title;
+        selected = { type: 'tile', c: 0, r: 0 };
+        const ideas = board.categories.reduce((n, cat) => n + cat.questions.filter(qq => qq.imageIdea && !qq.image).length, 0);
+        toast(`${ICONS.check} Imported! Check the tiles${ideas ? `, add ${ideas} picture${ideas > 1 ? 's' : ''}` : ''}, then Save`, 4000);
+        break;
+      }
       case 'mc-on': q.mc = true; if (q.choices.length < 2) q.choices = ['', '', '', '']; if (q.answer.trim() && !q.choices.some(c => c.trim())) q.choices[0] = q.answer.trim(); break;
       case 'mc-off': if (q.mc && !q.answer.trim()) q.answer = q.choices[q.correct] || ''; q.mc = false; break;
       case 'correct': q.correct = i; break;

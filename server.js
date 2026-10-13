@@ -18,7 +18,7 @@ function getLocalIP() {
   return 'localhost';
 }
 
-app.use(express.static(path.join(__dirname, 'public'), { index: false }));
+app.use(express.static(path.join(__dirname, 'public'), { index: false, redirect: false }));
 
 // Jeopardy board files (JSON + pictures) live in /boards, separate from the game code.
 const BOARDS_DIR = path.join(__dirname, 'boards');

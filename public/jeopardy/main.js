@@ -8,6 +8,7 @@ import { showSetup } from './setup-screen.js';
 import { showBoard } from './board-screen.js';
 import { showFinalRound } from './final-round.js';
 import { showWinnerScreen } from './winner-screen.js';
+import { showEditor } from './editor.js';
 import { clearGame, isRecent, loadGame, newGame, saveGame, showWinners, startFinal } from './game-state.js';
 
 const app = document.getElementById('app');
@@ -46,8 +47,28 @@ function setupNew() {
   setup();
 }
 
-function setup() {
+// The board editor, opened from setup. Coming back selects the board that was edited.
+// A refresh while editing reopens the editor (sessionStorage only lasts while this browser tab is open).
+function editor(file) {
+  try { sessionStorage.setItem('jeopardy-editing', file || ''); } catch { /* ignore */ }
+  showEditor(app, {
+    file,
+    onSaved: f => { try { sessionStorage.setItem('jeopardy-editing', f); } catch { /* ignore */ } },
+    onDone: saved => {
+      try { sessionStorage.removeItem('jeopardy-editing'); } catch { /* ignore */ }
+      setup(saved);
+    },
+  });
+}
+
+function editingAfterRefresh() {
+  try { return sessionStorage.getItem('jeopardy-editing'); } catch { return null; }
+}
+
+function setup(selectFile = null) {
   showSetup(app, {
+    selectFile,
+    onEdit: editor,
     resumeGame: loadGame(),
     onResume: play,
     onStart(choices) {
@@ -59,5 +80,7 @@ function setup() {
 }
 
 const saved = loadGame();
-if (saved && isRecent(saved)) play(saved);
+const editing = editingAfterRefresh();
+if (editing !== null) editor(editing || null);
+else if (saved && isRecent(saved)) play(saved);
 else setup();

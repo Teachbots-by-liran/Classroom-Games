@@ -37,6 +37,70 @@ app.get('/api/jeopardy/boards', (req, res) => {
   }));
 });
 
+// ---------- Jeopardy board editor: saving boards and pictures ----------
+// Only the laptop running the server may save (not other devices on the school network),
+// and files can only be written inside the boards folder.
+
+const IMAGES_DIR = path.join(BOARDS_DIR, 'images');
+const PICTURE_TYPES = { 'image/png': '.png', 'image/jpeg': '.jpg', 'image/gif': '.gif', 'image/webp': '.webp', 'image/svg+xml': '.svg' };
+
+function onlyThisComputer(req, res, next) {
+  const ip = req.socket.remoteAddress || '';
+  if (process.env.VERCEL) return res.status(403).json({ error: 'Saving only works when the game runs on your own computer.' });
+  if (ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1') return next();
+  res.status(403).json({ error: 'Boards can only be saved from the computer running the game.' });
+}
+
+// "My Board: Unit 3!" -> "my-board-unit-3"
+function slug(text) {
+  return String(text || '').toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g, '')
+    .trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-').slice(0, 60) || 'board';
+}
+
+// A file name that is not taken yet: name.json, name-2.json, name-3.json ...
+function freeName(dir, base, ext) {
+  let name = base + ext;
+  for (let n = 2; fs.existsSync(path.join(dir, name)); n++) name = `${base}-${n}${ext}`;
+  return name;
+}
+
+// Save a board. Body: { file?: "existing.json", title, board }. A new board gets a file name from its title.
+app.post('/api/jeopardy/boards', onlyThisComputer, express.json({ limit: '2mb' }), (req, res) => {
+  const { file, board } = req.body || {};
+  if (!board || typeof board !== 'object') return res.status(400).json({ error: 'Nothing to save.' });
+  let name = file;
+  if (name) {
+    if (!/^[\w-]+\.json$/.test(name)) return res.status(400).json({ error: 'Bad file name.' });
+  } else {
+    name = freeName(BOARDS_DIR, slug(board.title), '.json');
+  }
+  // The editor sends the file nicely laid out ("text"); make sure it really is the same board before writing it.
+  let text = JSON.stringify(board, null, 2) + '\n';
+  if (typeof req.body.text === 'string') {
+    try {
+      if (JSON.stringify(JSON.parse(req.body.text)) === JSON.stringify(board)) text = req.body.text;
+    } catch { /* fall back to the plain layout */ }
+  }
+  fs.writeFileSync(path.join(BOARDS_DIR, name), text);
+  res.json({ file: name });
+});
+
+// Save a picture. The picture is the request body; ?board=<board file> and ?name=<original file name>.
+// Returns the path to write in the board file, e.g. "images/my-board/cat.png".
+app.post('/api/jeopardy/images', onlyThisComputer, express.raw({ type: 'image/*', limit: '20mb' }), (req, res) => {
+  const ext = PICTURE_TYPES[req.headers['content-type']];
+  if (!ext || !Buffer.isBuffer(req.body) || !req.body.length) {
+    return res.status(400).json({ error: 'Please choose a picture file (PNG, JPG, GIF, WEBP or SVG).' });
+  }
+  const folder = slug(String(req.query.board || 'new-board').replace(/\.json$/i, ''));
+  const dir = path.join(IMAGES_DIR, folder);
+  fs.mkdirSync(dir, { recursive: true });
+  const base = slug(String(req.query.name || 'picture').replace(/\.[^.]+$/, '')) || 'picture';
+  const name = freeName(dir, base, ext);
+  fs.writeFileSync(path.join(dir, name), req.body);
+  res.json({ path: `images/${folder}/${name}` });
+});
+
 // On Vercel / any cloud host, return null so the browser keeps window.location.origin.
 // Locally, return the LAN IP so students' phones can connect.
 app.get('/api/info', (req, res) => {

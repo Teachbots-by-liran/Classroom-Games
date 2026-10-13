@@ -9,11 +9,12 @@ import { listBoards, loadBoard } from './board-file.js';
 const MIN_TEAMS = 2;
 const remembered = createSavedState('jeopardy-setup'); // last team names and board, for next lesson
 
-export async function showSetup(app, { onStart, resumeGame = null, onResume }) {
+// onEdit(file) opens the board editor (file = null for a new board). selectFile: the board to select first.
+export async function showSetup(app, { onStart, resumeGame = null, onResume, onEdit, selectFile = null }) {
   const last = remembered.load() || {};
   const state = {
     boards: [],
-    file: last.file || null,
+    file: selectFile || last.file || null,
     board: null,
     problems: [],
     teams: Array.isArray(last.teams) && last.teams.length >= MIN_TEAMS
@@ -33,7 +34,10 @@ export async function showSetup(app, { onStart, resumeGame = null, onResume }) {
       </div>
       <div class="setup-body">
         <section class="panel">
-          <div class="panel-head"><h2><span class="step-num">1</span>Board</h2></div>
+          <div class="panel-head">
+            <h2><span class="step-num">1</span>Board</h2>
+            <button class="ghost-btn" data-action="new-board" title="Make a new board">${ICONS.plus}New board</button>
+          </div>
           <div class="board-list" role="list"></div>
           <div class="problems" hidden></div>
         </section>
@@ -71,11 +75,14 @@ export async function showSetup(app, { onStart, resumeGame = null, onResume }) {
       return;
     }
     boardList.innerHTML = state.boards.map(b => `
-      <button class="board-card${b.error ? ' broken' : ''}" data-file="${esc(b.file)}" aria-pressed="${b.file === state.file}">
-        <span class="board-title">${b.error ? ICONS.warning + ' ' : ''}${esc(b.title)}</span>
-        <span class="board-cats">${b.error ? 'Needs fixing (select to see why)' : esc(b.categories.join(' · '))}</span>
-        <span class="board-check">${ICONS.check}</span>
-      </button>`).join('');
+      <div class="board-item">
+        <button class="board-card${b.error ? ' broken' : ''}" data-file="${esc(b.file)}" aria-pressed="${b.file === state.file}">
+          <span class="board-title">${b.error ? ICONS.warning + ' ' : ''}${esc(b.title)}</span>
+          <span class="board-cats">${b.error ? 'Needs fixing (select to see why)' : esc(b.categories.filter(Boolean).join(' · ') || 'No categories yet')}</span>
+          <span class="board-check">${ICONS.check}</span>
+        </button>
+        ${b.error ? '' : `<button class="board-edit" data-action="edit" data-file="${esc(b.file)}" title="Edit this board">${ICONS.pencil}</button>`}
+      </div>`).join('');
     boardList.querySelector('[aria-pressed="true"]')?.scrollIntoView({ block: 'nearest' });
   }
 
@@ -150,6 +157,8 @@ export async function showSetup(app, { onStart, resumeGame = null, onResume }) {
   root.addEventListener('click', e => {
     const card = e.target.closest('.board-card');
     if (card) return selectBoard(card.dataset.file);
+    const edit = e.target.closest('[data-action="edit"], [data-action="new-board"]');
+    if (edit) return onEdit(edit.dataset.action === 'edit' ? edit.dataset.file : null);
 
     const btn = e.target.closest('[data-action]');
     if (!btn) return;

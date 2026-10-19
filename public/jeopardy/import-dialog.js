@@ -14,7 +14,8 @@ import { describeJsonError } from './board-file.js';
 
 const REMEMBER = 'jeopardy-import-topic';
 
-export function claudePrompt(topic, level) {
+// pictures: false (default) = every question works with text only, no pictures needed.
+export function claudePrompt(topic, level, pictures = false) {
   return `Please create a Jeopardy quiz board for my English (EFL) class.
 
 Topic: ${topic || '[write the topic here]'}
@@ -33,8 +34,7 @@ Reply with ONLY one JSON code block, in exactly this format:
         { "question": "...", "answer": "..." },
         { "question": "...", "answer": "...", "explain": "..." },
         { "question": "...", "choices": ["...", "...", "...", "..."], "answer": "..." },
-        { "question": "What is this?", "imageIdea": "...", "answer": "..." },
-        { "question": "Who said this?", "quote": "...", "answer": "..." }
+${pictures ? '        { "question": "What is this?", "imageIdea": "...", "answer": "..." },\n' : ''}        { "question": "Who said this?", "quote": "...", "answer": "..." }
       ]
     }
   ],
@@ -49,7 +49,9 @@ Rules:
 - Optional "explain": a very short note shown after the answer (for example a meaning or a rule).
 - Optional "quote": a quotation shown in big letters above the question.
 - Make about a third of the questions multiple choice: add "choices" with 4 short options and write the correct option's exact text as "answer".
-- My students love pictures. For every question that would work well with a picture, add "imageIdea": a short description of a picture I can find (I will add the picture myself), and write the question so it works with that picture.
+${pictures
+    ? '- My students love pictures. For every question that would work well with a picture, add "imageIdea": a short description of a picture I can find (I will add the picture myself), and write the question so it works with that picture.'
+    : '- Do NOT use pictures: every question must be answerable from its text alone. No "What is this?" or "What is in the picture?" questions, and no "imageIdea" or "image".'}
 - Use straight double quotes, no comments and no trailing commas.`;
 }
 
@@ -102,6 +104,8 @@ export function importDialog() {
               <label>Topic<input data-k="topic" value="${esc(saved.topic || '')}" placeholder="e.g. Food and cooking"></label>
               <label>Students<input data-k="level" value="${esc(saved.level || '')}" placeholder="e.g. Grade 10, B1"></label>
             </div>
+            <label class="import-check"><input type="checkbox" data-k="pictures"${saved.pictures ? ' checked' : ''}>
+              <span>Include picture questions <small>(you add the pictures yourself)</small></span></label>
             <button class="dialog-btn primary" data-action="copy">${ICONS.check}<span>Copy prompt for Claude</span></button>
             <small>Then paste it into Claude (claude.ai) and send it.</small>
           </li>
@@ -125,12 +129,13 @@ export function importDialog() {
     const values = () => ({
       topic: el.querySelector('[data-k="topic"]').value.trim(),
       level: el.querySelector('[data-k="level"]').value.trim(),
+      pictures: el.querySelector('[data-k="pictures"]').checked,
     });
 
     async function copy() {
       const v = values();
       try { localStorage.setItem(REMEMBER, JSON.stringify(v)); } catch { /* ignore */ }
-      const prompt = claudePrompt(v.topic, v.level);
+      const prompt = claudePrompt(v.topic, v.level, v.pictures);
       try {
         await navigator.clipboard.writeText(prompt);
         toast(`${ICONS.check} Prompt copied: paste it into Claude`, 2600);

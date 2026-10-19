@@ -27,8 +27,10 @@ If the page is refreshed by accident, the game comes back exactly where it was.
 4. Copy Claude's whole answer, paste it into the box, press **Import**.
 5. Check the questions, add pictures where you like, and press **SAVE**.
 
-Tiles with a **dashed picture icon** have a picture idea from Claude (e.g. "a wooden spoon").
-The idea is shown inside the empty picture box so you know what to look for. Pictures are optional.
+By default Claude writes questions that need **no pictures**, so the board is ready to play straight away.
+If you tick **Include picture questions**, Claude also suggests picture ideas (e.g. "a wooden spoon"):
+those tiles get a **dashed picture icon**, and the idea is shown inside the empty picture box so you
+know what to look for.
 
 ### B. Use the board editor
 

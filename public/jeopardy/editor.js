@@ -11,6 +11,7 @@ import { chooseDialog, confirmDialog } from '../shared/dialog.js';
 import { createSavedState } from '../shared/saved-state.js';
 import { checkBoard } from './board-file.js';
 import { importDialog } from './import-dialog.js';
+import { deleteBrowserBoard, getBrowserBoard, isBrowserBoard, pictureToData, saveBrowserBoard, serverCanSave } from './my-boards.js';
 
 const DRAFT = createSavedState('jeopardy-editor-draft');
 const LETTERS = 'ABCDEF';
@@ -25,6 +26,7 @@ const EXTRA_ICONS = {
   quote: '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 17.5c0-4 1.5-8 6-10.5l1 1.6C8.5 10.3 7.6 12 7.5 13.5H10V19H4zM13 17.5c0-4 1.5-8 6-10.5l1 1.6c-2.5 1.7-3.4 3.4-3.5 4.9H19V19h-6z"/></svg>',
   star: '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.6 5.6 21.1 7 14 1.7 9l7.2-.9z"/></svg>',
   gear: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>',
+  download: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v12M7 11l5 5 5-5M4.5 20.5h15"/></svg>',
   save: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M5 3.5h11l3.5 3.5v13.5h-15z"/><path d="M8 3.5v5h7v-5M8 20.5v-6h8v6"/></svg>',
 };
 
@@ -141,8 +143,17 @@ function isEmpty(q) {
 
 // onDone(file): leave the editor. onSaved(file): the board was saved (a new board gets its file name now).
 export async function showEditor(app, { file = null, onDone, onSaved = () => {} }) {
+  // On the laptop boards are saved as files; online they are saved inside this browser.
+  const toFolder = await serverCanSave();
   let board;
-  if (file) {
+  if (file && isBrowserBoard(file)) {
+    const raw = await getBrowserBoard(file);
+    if (!raw) {
+      toast(`${ICONS.warning} This board is no longer saved in this browser.`, 4000);
+      return onDone(null);
+    }
+    board = fromFile(raw);
+  } else if (file) {
     const res = await fetch('/boards/' + encodeURIComponent(file), { cache: 'no-store' });
     try {
       board = fromFile(JSON.parse(await res.text()));
@@ -176,6 +187,7 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
         <input class="ed-title" data-field="title" placeholder="Board title, e.g. Unit 3: Food" maxlength="60" spellcheck="true">
         <span class="ed-status" aria-live="polite"></span>
         <button class="ed-btn ed-import" data-action="import" title="Fill in the whole board at once, e.g. from Claude">${ICONS.plus}<span>Import</span></button>
+        <button class="ed-btn ed-import" data-action="download" title="Save this board as a file (pictures included), e.g. to use on another computer">${EXTRA_ICONS.download}<span>Download</span></button>
         <button class="start-btn ed-save" data-action="save">${EXTRA_ICONS.save}SAVE</button>
       </header>
       <div class="ed-main">
@@ -273,7 +285,7 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
       <div class="ed-field">
         <span class="ed-label">${label}<small>optional</small></span>
         <div class="ed-picture${value ? ' has' : ''}" data-drop="${field}">
-          ${value ? `<img src="${esc('/boards/' + value)}" alt="">` : `<span class="ed-drop-hint">${EXTRA_ICONS.picture}Drop a picture here</span>${idea ? `<span class="ed-idea">Idea: ${esc(idea)}</span>` : ''}`}
+          ${value ? `<img src="${esc(value.startsWith('data:') ? value : '/boards/' + value)}" alt="">` : `<span class="ed-drop-hint">${EXTRA_ICONS.picture}Drop a picture here</span>${idea ? `<span class="ed-idea">Idea: ${esc(idea)}</span>` : ''}`}
         </div>
         <div class="ed-row">
           <label class="ed-btn">${EXTRA_ICONS.picture}<span>${value ? 'Change' : 'Choose'} picture</span>
@@ -341,6 +353,13 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
             <button data-action="dd-mode" data-mode="none" role="radio" aria-checked="${board.dd.mode === 'none'}">${ICONS.close}<span>None</span></button>
           </div>
           ${board.dd.mode === 'fixed' ? `<p class="ed-note">Now: category ${board.dd.c + 1}, ${(board.dd.r + 1) * 100} points. To change it, open a tile and press “Daily Double here”.</p>` : ''}
+        </div>
+        <div class="ed-field">
+          <span class="ed-label">Saved where?</span>
+          <p class="ed-note">${toFolder
+            ? 'In the boards folder on this computer.'
+            : 'In this browser, on this computer only. Use Download to keep a copy or to use the board on another computer (there: Import → choose the file).'}</p>
+          ${isBrowserBoard(file) ? `<button class="ed-btn ed-clear" data-action="delete-board">${ICONS.close}<span>Delete this board</span></button>` : ''}
         </div>`;
       return;
     }
@@ -388,18 +407,24 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
     showStatus();
     const raw = toFile(board);
     try {
-      const res = await fetch('/api/jeopardy/boards', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ file, board: raw, text: layout(raw) }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Could not save.');
-      file = data.file;
+      if (toFolder) {
+        const res = await fetch('/api/jeopardy/boards', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file, board: raw, text: layout(raw) }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Could not save.');
+        file = data.file;
+      } else {
+        // Online: keep it in this browser. A board from the boards folder becomes the teacher's own copy.
+        file = await saveBrowserBoard(isBrowserBoard(file) ? file : null, raw);
+      }
+      DRAFT.clear();
       onSaved(file);
       dirty = false;
-      DRAFT.clear();
       const left = friendlyProblems(problems()).length;
-      toast(`${ICONS.check} Saved${left ? ` · ${left} thing${left > 1 ? 's' : ''} left to finish` : ' · ready to play!'}`, 2600);
+      const where = toFolder ? '' : ' in this browser';
+      toast(`${ICONS.check} Saved${where}${left ? ` · ${left} thing${left > 1 ? 's' : ''} left to finish` : ' · ready to play!'}`, 2600);
       return true;
     } catch (err) {
       toast(`${ICONS.warning} ${esc(err.message)}`, 4000);
@@ -433,6 +458,33 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
   }
   addEventListener('beforeunload', warnOnClose);
 
+  // ---------- Download ----------
+  // The file includes every picture, so it works on any computer (Import → choose the file).
+  async function download() {
+    toast(`${EXTRA_ICONS.download} Preparing the file…`, 1500);
+    const raw = toFile(board);
+    const questions = [...raw.categories.flatMap(c => c.questions), ...(raw.final ? [raw.final] : [])];
+    for (const q of questions) {
+      for (const key of ['image', 'answerImage']) {
+        if (!q[key] || q[key].startsWith('data:')) continue;
+        try {
+          const res = await fetch('/boards/' + q[key].split('/').map(encodeURIComponent).join('/'));
+          const blob = await res.blob();
+          q[key] = await pictureToData(new File([blob], q[key], { type: blob.type }));
+        } catch { /* leave the path; the picture just won't travel */ }
+      }
+    }
+    const name = (raw.title || 'board').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'board';
+    const url = URL.createObjectURL(new Blob([layout(raw)], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }
+
   // ---------- Pictures ----------
   async function upload(fileObj, field) {
     if (!fileObj || !PICTURE.test(fileObj.type)) {
@@ -442,6 +494,12 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
     const folder = file || (board.title.trim() || 'new-board');
     toast(`${EXTRA_ICONS.picture} Adding picture…`, 1200);
     try {
+      if (!toFolder) {
+        current()[field] = await pictureToData(fileObj);
+        changed();
+        render();
+        return;
+      }
       const res = await fetch(`/api/jeopardy/images?board=${encodeURIComponent(folder)}&name=${encodeURIComponent(fileObj.name)}`, {
         method: 'POST', headers: { 'Content-Type': fileObj.type }, body: fileObj,
       });
@@ -509,6 +567,15 @@ export async function showEditor(app, { file = null, onDone, onSaved = () => {} 
     switch (btn.dataset.action) {
       case 'back': return back();
       case 'save': await save(); return;
+      case 'download': await download(); return;
+      case 'delete-board': {
+        if (!(await confirmDialog({ title: 'Delete this board?', text: 'It will be removed from this browser. This can\u2019t be undone.', ok: 'Delete', danger: true }))) return;
+        await deleteBrowserBoard(file);
+        DRAFT.clear();
+        removeEventListener('beforeunload', warnOnClose);
+        toast(`${ICONS.check} Board deleted`, 2000);
+        return onDone(null);
+      }
       case 'import': {
         const raw = await importDialog();
         if (!raw) return;

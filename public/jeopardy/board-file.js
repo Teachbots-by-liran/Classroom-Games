@@ -1,18 +1,30 @@
-// Reads Jeopardy board files from the /boards folder and checks them for mistakes.
+// Reads Jeopardy boards — files in the /boards folder, or boards saved in this browser — and checks them.
 // Every problem is described in plain words so a teacher can fix the file without help.
+
+import { getBrowserBoard, isBrowserBoard, listBrowserBoards } from './my-boards.js';
 
 const MAX_CATEGORIES = 6;
 const MAX_QUESTIONS = 5;
 
-// The list of boards for the setup menu.
+// The list of boards for the setup menu: the boards folder first, then boards saved in this browser.
 export async function listBoards() {
-  const res = await fetch('/api/jeopardy/boards');
-  if (!res.ok) throw new Error('Could not read the boards folder.');
-  return res.json();
+  let files = [];
+  try {
+    const res = await fetch('/api/jeopardy/boards');
+    if (res.ok) files = await res.json();
+  } catch { /* file list unavailable: browser boards still show */ }
+  return [...files, ...await listBrowserBoards()];
 }
 
 // Load one board file. Returns { board, problems }. If problems is not empty, the board can't be played.
 export async function loadBoard(file) {
+  if (isBrowserBoard(file)) {
+    const raw = await getBrowserBoard(file);
+    if (!raw) return { board: null, problems: ['This board is no longer saved in this browser.'] };
+    const { board, problems } = checkBoard(raw, file);
+    if (board) problems.push(...await findMissingPictures(board));
+    return { board, problems };
+  }
   const res = await fetch('/boards/' + encodeURIComponent(file), { cache: 'no-store' });
   if (!res.ok) return { board: null, problems: [`The file "${file}" could not be opened.`] };
   const text = await res.text();

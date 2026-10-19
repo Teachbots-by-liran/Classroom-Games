@@ -51,6 +51,13 @@ function onlyThisComputer(req, res, next) {
   res.status(403).json({ error: 'Boards can only be saved from the computer running the game.' });
 }
 
+// Can boards be saved as files here? (Yes on the laptop running the game; no online or from other devices.)
+app.get('/api/jeopardy/can-save', (req, res) => {
+  const ip = req.socket.remoteAddress || '';
+  const local = ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
+  res.json({ canSave: !process.env.VERCEL && local });
+});
+
 // "My Board: Unit 3!" -> "my-board-unit-3"
 function slug(text) {
   return String(text || '').toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g, '')
@@ -65,7 +72,7 @@ function freeName(dir, base, ext) {
 }
 
 // Save a board. Body: { file?: "existing.json", title, board }. A new board gets a file name from its title.
-app.post('/api/jeopardy/boards', onlyThisComputer, express.json({ limit: '2mb' }), (req, res) => {
+app.post('/api/jeopardy/boards', onlyThisComputer, express.json({ limit: '50mb' }), (req, res) => {
   const { file, board } = req.body || {};
   if (!board || typeof board !== 'object') return res.status(400).json({ error: 'Nothing to save.' });
   let name = file;

@@ -155,4 +155,9 @@ right ✓ or wrong ✗ and press **Winners**.
 - **Team names** are remembered for next time.
 - **Pictures:** PNG, JPG, GIF, WEBP or SVG. Landscape pictures fill the space best.
 - **Backing up:** your boards and pictures are all in the `boards` folder. Copy that folder to keep them safe.
-- **Saving only works on your laptop.** If the site is used online, boards can be played but not saved.
+- **Online version** (https://classroom-games-teach-bots.vercel.app/jeopardy): you can import, make and
+  save boards there too, but they are saved **in that browser on that computer only** (marked
+  *This browser* in the board list). To use one on another computer, press **Download** in the editor,
+  then on the other computer: **+ New board → Import → choose the file**. Pictures travel inside the file.
+  If the browser's history and site data are cleared, browser boards are gone, so keep the downloaded file.
+  To delete a browser board: open it in the editor → **Settings** → **Delete this board**.

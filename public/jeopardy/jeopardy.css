@@ -916,3 +916,12 @@ kbd {
 .import-error[hidden] { display: none; }
 .import-error .icon { flex-shrink: 0; margin-top: .15em; }
 .dialog.import .dialog-buttons { justify-content: flex-end; }
+
+/* Boards saved in this browser (online version) */
+.board-tag {
+  display: inline-flex; align-items: center; gap: calc(var(--u) * .3); vertical-align: middle;
+  margin-left: calc(var(--u) * .8); padding: calc(var(--u) * .1) calc(var(--u) * .7); border-radius: 99px;
+  border: calc(var(--u) * .18) solid rgba(255, 255, 255, .7);
+  font-size: calc(var(--u) * 1.3); font-weight: 700; letter-spacing: .03em;
+}
+.board-tag .icon { width: 1em; height: 1em; }

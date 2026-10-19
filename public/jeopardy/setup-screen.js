@@ -77,7 +77,7 @@ export async function showSetup(app, { onStart, resumeGame = null, onResume, onE
     boardList.innerHTML = state.boards.map(b => `
       <div class="board-item">
         <button class="board-card${b.error ? ' broken' : ''}" data-file="${esc(b.file)}" aria-pressed="${b.file === state.file}">
-          <span class="board-title">${b.error ? ICONS.warning + ' ' : ''}${esc(b.title)}</span>
+          <span class="board-title">${b.error ? ICONS.warning + ' ' : ''}${esc(b.title)}${b.inBrowser ? `<span class="board-tag">${ICONS.pencil}This browser</span>` : ''}</span>
           <span class="board-cats">${b.error ? 'Needs fixing (select to see why)' : esc(b.categories.filter(Boolean).join(' · ') || 'No categories yet')}</span>
           <span class="board-check">${ICONS.check}</span>
         </button>

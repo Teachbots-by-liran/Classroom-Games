@@ -46,11 +46,11 @@
     {
       "name": "Complete It",
       "questions": [
-        { "question": "Please ___ your plastic bottles. Don't throw them away!", "choices": ["recycle", "measure", "delay", "exist"], "answer": "recycle" },
-        { "question": "Complete: We have r__ out of milk. Can you buy some?", "answer": "run", "explain": "run out of = have no more of" },
-        { "question": "Complete: You can always r___ on me. I'll help you.", "answer": "rely", "explain": "rely on = depend on" },
-        { "question": "The ___ of the study surprised the scientists.", "choices": ["findings", "flu", "landscape", "salary"], "answer": "findings", "explain": "findings = results" },
-        { "question": "Complete: The teacher used a story to i__________ her point.", "answer": "illustrate", "explain": "illustrate = clarify by giving an example" }
+        { "question": "Please ___ your plastic bottles. Don't throw them away!", "choices": ["measure", "delay", "recycle", "exist"], "answer": "recycle" },
+        { "question": "Oh no! We have ___ out of milk. Can you buy some?", "choices": ["thrown", "run", "set", "kept"], "answer": "run", "explain": "run out of = have no more of" },
+        { "question": "Don't worry, you can always ___ on me. I'll help you.", "choices": ["focus", "regard", "review", "rely"], "answer": "rely", "explain": "rely on = depend on" },
+        { "question": "The ___ of the study surprised the scientists.", "choices": ["flu", "landscape", "findings", "salary"], "answer": "findings", "explain": "findings = results" },
+        { "question": "The teacher told a story to ___ her point.", "choices": ["investigate", "illustrate", "invest", "introduce"], "answer": "illustrate", "explain": "illustrate = clarify by giving an example" }
       ]
     }
   ],

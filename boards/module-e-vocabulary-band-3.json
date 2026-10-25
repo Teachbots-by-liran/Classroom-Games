@@ -24,13 +24,13 @@
       ]
     },
     {
-      "name": "Opposites",
+      "name": "Definitions",
       "questions": [
-        { "question": "What is the opposite of URBAN?", "answer": "rural", "explain": "urban = city · rural = countryside" },
-        { "question": "Add a prefix to make the opposite of LIKELY.", "answer": "unlikely" },
-        { "question": "What is the opposite of DECREASE?", "answer": "increase" },
-        { "question": "What is the opposite of PRIVATE?", "answer": "public" },
-        { "question": "What is the opposite of INITIALLY?", "answer": "finally / in the end", "explain": "initially = at first" }
+        { "question": "Which word matches this definition?", "quote": "a very heavy flow of water", "answer": "flood" },
+        { "question": "Which word matches this definition?", "quote": "a catastrophe; a terrible event", "answer": "disaster" },
+        { "question": "Which word matches this definition?", "quote": "one of a kind", "answer": "unique" },
+        { "question": "Which word matches this definition?", "quote": "relating to a city", "choices": ["rural", "urban", "regional", "universal"], "answer": "urban", "explain": "the opposite is rural (countryside)" },
+        { "question": "Which word matches this definition?", "quote": "happening once in a while", "choices": ["frequent", "regular", "occasional", "initial"], "answer": "occasional" }
       ]
     },
     {

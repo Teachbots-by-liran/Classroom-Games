@@ -928,3 +928,10 @@ kbd {
 .import-check { display: flex; align-items: center; gap: calc(var(--u) * .7); cursor: pointer; font-weight: 700; font-size: calc(var(--u) * 1.9); }
 .import-check input { flex-shrink: 0; margin: 0; width: calc(var(--u) * 2.4); height: calc(var(--u) * 2.4); accent-color: #FFD24A; cursor: pointer; }
 .import-check small { font-weight: 600; opacity: .7; }
+
+/* Multiple choice leaves more room for the question (and quote): slimmer choices and Answer button */
+.has-choices .q-side { gap: calc(var(--u) * .9); }
+.has-choices:not(.has-image) .q-choices { grid-template-rows: repeat(var(--rows), calc(var(--u) * 6)); gap: calc(var(--u) * .8); }
+.has-choices .q-answer-slot { min-height: calc(var(--u) * 4.6); }
+.has-choices .q-reveal { padding: calc(var(--u) * .25) calc(var(--u) * 1.8); font-size: calc(var(--u) * 2.3); }
+.has-choices .q-quote + .q-question { font-size: .75em; }

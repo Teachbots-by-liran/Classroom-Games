@@ -1,0 +1,58 @@
+{
+  "title": "Module E Vocabulary (Band III)",
+  "timerSeconds": 30,
+  "dailyDouble": "random",
+  "categories": [
+    {
+      "name": "Meaning in Context",
+      "questions": [
+        { "question": "In this sentence, FREQUENT means…", "quote": "Traffic jams are a frequent problem in our city.", "choices": ["happening often", "very dangerous", "very small", "happening rarely"], "answer": "happening often" },
+        { "question": "In this sentence, VARY means…", "quote": "The rules vary from school to school.", "choices": ["stay the same", "change", "are strict", "are broken"], "answer": "change" },
+        { "question": "In this sentence, NOTICE means…", "quote": "Did you notice the new sign on the door?", "choices": ["build", "observe", "remove", "forget"], "answer": "observe" },
+        { "question": "In this sentence, SIGNIFICANT means…", "quote": "The new law had a significant effect on drivers.", "choices": ["small", "strange", "important", "sudden"], "answer": "important" },
+        { "question": "In this sentence, DELIBERATELY means…", "quote": "He broke the window deliberately.", "choices": ["by accident", "on purpose", "quickly", "quietly"], "answer": "on purpose" }
+      ]
+    },
+    {
+      "name": "Synonyms",
+      "questions": [
+        { "question": "Give a synonym for SELDOM.", "answer": "rarely" },
+        { "question": "Give a synonym for TRASH.", "answer": "garbage / rubbish / waste" },
+        { "question": "Give a synonym for COPE WITH.", "answer": "deal with" },
+        { "question": "Give a synonym for RELIABLE.", "answer": "trustworthy / dependable" },
+        { "question": "Give a synonym for MORE OR LESS.", "answer": "approximately / about", "explain": "more or less 100 = about 100" }
+      ]
+    },
+    {
+      "name": "Opposites",
+      "questions": [
+        { "question": "What is the opposite of URBAN?", "answer": "rural", "explain": "urban = city · rural = countryside" },
+        { "question": "Add a prefix to make the opposite of LIKELY.", "answer": "unlikely" },
+        { "question": "What is the opposite of DECREASE?", "answer": "increase" },
+        { "question": "What is the opposite of PRIVATE?", "answer": "public" },
+        { "question": "What is the opposite of INITIALLY?", "answer": "finally / in the end", "explain": "initially = at first" }
+      ]
+    },
+    {
+      "name": "Word Forms",
+      "questions": [
+        { "question": "Make a NOUN from the verb PARTICIPATE.", "answer": "participation", "explain": "also: participant (a person)" },
+        { "question": "Make an ADJECTIVE from the noun FINANCE.", "answer": "financial" },
+        { "question": "Choose the right form: Nobody understood the ___ of his words.", "choices": ["significant", "significance", "significantly", "signify"], "answer": "significance", "explain": "After \"the\" we need a noun." },
+        { "question": "Make a NOUN from the verb PREVENT.", "answer": "prevention" },
+        { "question": "Choose the right form: This new machine works very ___.", "choices": ["efficient", "efficiency", "efficiently", "effect"], "answer": "efficiently", "explain": "An adverb describes the verb \"works\"." }
+      ]
+    },
+    {
+      "name": "Complete It",
+      "questions": [
+        { "question": "Please ___ your plastic bottles. Don't throw them away!", "choices": ["recycle", "measure", "delay", "exist"], "answer": "recycle" },
+        { "question": "Complete: We have r__ out of milk. Can you buy some?", "answer": "run", "explain": "run out of = have no more of" },
+        { "question": "Complete: You can always r___ on me. I'll help you.", "answer": "rely", "explain": "rely on = depend on" },
+        { "question": "The ___ of the study surprised the scientists.", "choices": ["findings", "flu", "landscape", "salary"], "answer": "findings", "explain": "findings = results" },
+        { "question": "Complete: The teacher used a story to i__________ her point.", "answer": "illustrate", "explain": "illustrate = clarify by giving an example" }
+      ]
+    }
+  ],
+  "final": { "category": "Meaning in Context", "question": "In \"The trip was really worthwhile\", what does WORTHWHILE mean?", "answer": "valuable / rewarding" }
+}
